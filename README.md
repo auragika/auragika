@@ -67,7 +67,7 @@ Live at [auragika.netlify.app](https://auragika.netlify.app)
 
 | Layer | Choice | Notes |
 |---|---|---|
-| Site generator | Hugo 0.124.0 | Zero-config static output |
+| Site generator | Hugo 0.163.3 | Zero-config static output |
 | Styling | CSS custom properties | Dark palette with glass morphism |
 | Deploy | Netlify | Auto-deploy on push |
 
@@ -116,7 +116,7 @@ Open `http://localhost:1313`.
 |---|---|
 | Build command | `hugo --minify` |
 | Publish directory | `public` |
-| Hugo version | `0.124.0` |
+| Hugo version | `0.163.3` |
 
 **3. Deploy** — every push to `main` triggers a redeploy.
 
