@@ -1,0 +1,17 @@
+{{- /* Section links point at /#id so they also work from the 404 page. */ -}}
+<header class="appbar">
+  <div class="appbar-inner">
+    <a class="brand" href="{{ if .IsHome }}#main{{ else }}/{{ end }}" aria-label="Auragika home">
+      <span class="brand-mark">{{ partial "icon.html" "spark" }}</span>
+      <span>Aura<span class="accent">gika</span></span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="/#apps">Apps</a>
+      <a href="/#next">Next</a>
+      <a href="/#us">Us</a>
+    </nav>
+    <div class="appbar-actions">
+      <button id="theme-btn" class="icon-btn" type="button" aria-label="Switch to light theme"></button>
+    </div>
+  </div>
+</header>

@@ -69,7 +69,7 @@ main:focus { outline: none; }
 /* ---------- Sections ---------- */
 .section { padding-top: clamp(56px, 9vh, 96px); }
 .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-.story { margin-top: 10px; max-width: 36rem; }
+.section-lede { margin-top: 10px; max-width: 36rem; }
 .live-dot { width: 7px; height: 7px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, .18); }
 
 /* ---------- App cards (cursor spotlight via --mx/--my from app.js) ---------- */
@@ -125,6 +125,10 @@ main:focus { outline: none; }
 .person { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 16px; }
 .person-photo { width: 72px; height: 72px; box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent-ring); }
 .person-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* ---------- 404 ---------- */
+.not-found { text-align: center; }
+.not-found .lede { margin: 10px 0 24px; }
 
 /* ---------- Footer ---------- */
 .footer { margin-top: clamp(64px, 10vh, 112px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }

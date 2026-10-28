@@ -1,0 +1,19 @@
+{{- /* One app in the grid. Takes a dict: app (an entry of data/apps.yaml) and i (its index, for the reveal stagger). */ -}}
+{{- $app := .app -}}
+<li class="reveal{{ if $app.featured }} is-featured{{ end }}" style="--d:{{ mul .i 60 }}ms">
+  <a class="card app-card" href="{{ $app.url }}" target="_blank" rel="noopener">
+    <span class="app-icon">{{ partial "icon.html" $app.icon }}</span>
+    <span class="app-body">
+      <span class="h3 app-name">{{ $app.name }}{{ if $app.featured }} <span class="pill pill-accent">Featured</span>{{ end }}</span>
+      <span class="muted app-desc">{{ $app.desc }}</span>
+    </span>
+    <span class="app-foot">
+      <span class="mono app-host">{{ (urls.Parse $app.url).Host }}</span>
+      <span class="app-go">{{ partial "icon.html" "arrow" }}</span>
+    </span>
+    {{- if $app.featured }}
+    <span class="app-mark" aria-hidden="true">{{ partial "icon.html" $app.icon }}</span>
+    {{- end }}
+    <span class="sr-only">(opens in a new tab)</span>
+  </a>
+</li>

@@ -14,10 +14,12 @@ Live at [auragika.com](https://auragika.com)
 |---|---|
 | **Hero** | The Auragika wordmark, how the name is made, and the two main actions |
 | **Apps** | Every live app, with QuizClash featured; driven by `data/apps.yaml` |
-| **Next** | What's on the way (travel journal, our kitchen) |
+| **Next** | What's on the way (travel journal, our kitchen); driven by `data/soon.yaml` |
 | **Us** | Ruchika and Anurag, with LinkedIn and portfolio links; driven by `data/people.yaml` |
 
-To add or change an app or a person, edit the YAML file; the page picks it up.
+To add or change an app, an upcoming item or a person, edit the YAML file; the page picks it up. Icons are keys from `layouts/_partials/icon.html`.
+
+**Featured app layout:** on wide screens the featured app is a 2×2 block in a three-column grid, so **one featured app plus five others** fills it exactly. With a different count, check the grid for a lone card in the last row.
 
 ---
 
@@ -42,7 +44,7 @@ Hugo concatenates the two (theme first), then minifies and fingerprints the resu
 - The one site-specific type token is `--font-serif` (Instrument Serif italic). It's used only for the hero tagline.
 - Before merging a visual change, check it at 375 px and desktop width, in light and dark, with no horizontal scroll.
 
-The theme is toggled with the button in the app bar and stored in `localStorage` (`au_theme`). A tiny script in `<head>` applies it before first paint, so there's no flash.
+The theme is toggled with the button in the app bar and stored in `localStorage` (`au_theme`). `assets/js/theme-init.js` loads as a blocking script in `<head>` and applies it before first paint, so there's no flash. It's an external file rather than inline so the CSP can forbid inline scripts.
 
 ---
 
@@ -52,8 +54,9 @@ The theme is toggled with the button in the app bar and stored in `localStorage`
 |---|---|---|
 | Site generator | Hugo 0.163.3 | Data-driven sections, image processing, CSS/JS fingerprinting |
 | Styling | Auragika theme + plain CSS | No framework, no build step beyond Hugo |
-| Scripts | One small vanilla JS file | Theme toggle, scroll reveal, card spotlight, service worker |
+| Scripts | Two small vanilla JS files | `theme-init.js` (pre-paint) and `app.js` (toggle, reveal, spotlight, service worker) |
 | Deploy | Netlify | Builds on push; preview on every PR |
+| Security | Headers in `netlify.toml` | CSP with no inline scripts, Google Fonts as the only third party; SRI on our own CSS/JS |
 
 **No npm, no bundler.** Hugo is the only build tool.
 
@@ -68,30 +71,35 @@ auragika/
 │   │   ├── auragika.css     ← Shared theme (don't edit, replace)
 │   │   └── app.css          ← Accent + site components
 │   ├── images/              ← Profile photos (resized by Hugo)
-│   └── js/app.js            ← Theme toggle, reveal, spotlight, service worker
+│   └── js/
+│       ├── theme-init.js    ← Applies the saved theme before first paint
+│       └── app.js           ← Theme toggle, reveal, spotlight, service worker
 ├── data/
 │   ├── apps.yaml            ← The apps grid
+│   ├── soon.yaml            ← "What we're making next"
 │   └── people.yaml          ← The two of us
 ├── layouts/
-│   ├── _default/
-│   │   ├── baseof.html      ← HTML shell: head, theme pre-paint, CSS/JS
-│   │   └── index.html       ← The one-page site
-│   ├── partials/icon.html   ← Line icons
-│   └── 404.html
-├── static/                  ← manifest, service worker, app icons
-├── config.toml
-└── netlify.toml             ← Build command, Hugo version, headers
+│   ├── baseof.html          ← Page shell: head, header, main, footer, scripts
+│   ├── home.html            ← The one-page site
+│   ├── 404.html
+│   └── _partials/           ← head, header, footer, section-head, app-card, person-card, icon
+├── static/                  ← favicon, app icons, manifest, service worker
+├── hugo.toml
+├── netlify.toml             ← Build, Hugo version, cache and security headers
+├── CLAUDE.md                ← Notes for Claude Code
+└── CONTRIBUTING.md          ← Branches, commits, PRs, checks
 ```
-
 ---
 
 ## Local Development
+
+Needs [Hugo](https://gohugo.io/installation/) 0.146 or later (Netlify builds with 0.163.3).
 
 ```bash
 hugo server
 ```
 
-Open `http://localhost:1313`.
+Open `http://localhost:1313`. `hugo server` doesn't apply the headers in `netlify.toml`; the deploy preview does, so check CSP-sensitive changes there.
 
 ---
 
@@ -108,3 +116,5 @@ Open `http://localhost:1313`.
 | Hugo version | `0.163.3` |
 
 **3. Deploy**: every push to `main` triggers a redeploy, and every PR gets a deploy preview.
+
+Changes reach `main` only through pull requests (see [CONTRIBUTING.md](CONTRIBUTING.md)). The Netlify deploy preview must pass before a PR can merge.

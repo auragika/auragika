@@ -1,0 +1,7 @@
+# "What we're making next" cards, in display order. icon: a key from layouts/_partials/icon.html.
+- name: Travel journal
+  icon: compass
+  desc: Places we loved, itineraries that worked and the tips we wish we'd had.
+- name: Our kitchen
+  icon: utensils
+  desc: Recipes we cook on repeat, from ten-minute weekday meals to slow weekend feasts.
