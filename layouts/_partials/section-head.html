@@ -1,0 +1,13 @@
+{{- /* Section heading. Takes a dict: eyebrow, title, and optionally lede and live (a count shown as "N live"). */ -}}
+<div class="section-head reveal">
+  <div>
+    <p class="eyebrow">{{ .eyebrow }}</p>
+    <h2 class="h1">{{ .title }}</h2>
+    {{- with .lede }}
+    <p class="lede section-lede">{{ . }}</p>
+    {{- end }}
+  </div>
+  {{- with .live }}
+  <span class="pill pill-muted"><span class="live-dot" aria-hidden="true"></span><span class="mono">{{ . }}</span>&nbsp;live</span>
+  {{- end }}
+</div>

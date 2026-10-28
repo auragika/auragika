@@ -1,0 +1,15 @@
+{{- /* One of us. Takes a dict: person (an entry of data/people.yaml) and i (its index, for the reveal stagger). */ -}}
+{{- $p := .person -}}
+{{- $img := (resources.Get $p.photo).Resize "192x webp q85" -}}
+<li class="card card-pad person reveal" style="--d:{{ mul .i 80 }}ms">
+  <img class="avatar person-photo" src="{{ $img.RelPermalink }}" width="72" height="72" alt="{{ $p.name }}" loading="lazy">
+  <div>
+    <h3 class="h2">{{ $p.name }}</h3>
+    <p class="muted">{{ $p.role }}</p>
+  </div>
+  <div class="person-links">
+    {{- range $p.links }}
+    <a class="btn btn-secondary btn-sm" href="{{ .url }}" target="_blank" rel="noopener">{{ partial "icon.html" .icon }}{{ .label }}<span class="sr-only"> for {{ $p.name }} (opens in a new tab)</span></a>
+    {{- end }}
+  </div>
+</li>

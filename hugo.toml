@@ -1,0 +1,10 @@
+title = "Auragika"
+baseURL = "https://auragika.com/"
+locale = "en-us"
+
+# One page plus a 404: no lists, taxonomies or feeds.
+disableKinds = ["page", "section", "taxonomy", "term", "rss"]
+enableRobotsTXT = true
+
+[params]
+  description = "Ruchika & Anurag: the apps we build, the places we go and what we cook."

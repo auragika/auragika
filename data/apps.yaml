@@ -1,5 +1,5 @@
 # Apps shown in the "Apps we built" grid, in display order.
-# icon: a key from layouts/partials/icon.html. featured: a 2×2 block on wide screens (one featured + five fills 3×3).
+# icon: a key from layouts/_partials/icon.html. featured: a 2×2 block on wide screens (one featured + five fills 3×3).
 - name: QuizClash
   url: https://quizclash.auragika.com
   icon: bolt
