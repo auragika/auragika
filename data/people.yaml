@@ -1,0 +1,13 @@
+# The two of us, shown in "Born from two names". photo is under assets/.
+- name: Ruchika
+  role: Creator · Advisor · Dreamer
+  photo: images/nova.webp
+  links:
+    - { label: LinkedIn, icon: linkedin, url: "https://www.linkedin.com/in/ruchika-singh-20/" }
+    - { label: Portfolio, icon: globe, url: "https://novaarch.netlify.app/" }
+- name: Anurag
+  role: Builder · Explorer · Thinker
+  photo: images/devon.webp
+  links:
+    - { label: LinkedIn, icon: linkedin, url: "https://www.linkedin.com/in/anuragkar-16/" }
+    - { label: Portfolio, icon: globe, url: "https://anuragkar.netlify.app/" }

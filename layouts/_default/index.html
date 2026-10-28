@@ -1,499 +1,129 @@
-{{ define "head_extra" }}
-{{- $bg1 := (resources.Get "images/background1.webp").Resize "2400x webp q80" -}}
-<link rel="preload" href="{{ $bg1.RelPermalink }}" as="image" fetchpriority="high">
-{{ end }}
-
 {{ define "main" }}
-{{- $bg1   := (resources.Get "images/background1.webp").Resize "2400x webp q80" -}}
-{{- $bg2   := (resources.Get "images/background2.webp").Resize "1400x webp q80" -}}
-{{- $bg3   := (resources.Get "images/background3.webp").Resize "1400x webp q80" -}}
-{{- $bg4   := (resources.Get "images/background4.webp").Resize "1400x webp q80" -}}
-{{- $bg5   := (resources.Get "images/background5.webp").Resize "1400x webp q80" -}}
-{{- $bg6   := (resources.Get "images/background6.webp").Resize "1400x webp q80" -}}
-{{- $nova  := (resources.Get "images/nova.webp").Resize  "300x webp q85" -}}
-{{- $devon := (resources.Get "images/devon.webp").Resize "300x webp q85" -}}
-
-  <!-- ══ LOADER ══ -->
-  <div id="loader">
-    <div class="loader-logo">AU✦</div>
-    <div class="loader-bar"><div class="loader-bar-fill" id="loader-fill"></div></div>
-  </div>
-
-  <!-- ══ NAVBAR ══ -->
-  <nav id="navbar">
-    <a href="#home" class="nav-logo">AU✦</a>
-    <ul class="nav-links">
-      <li><a href="#home" class="active">Home</a></li>
-      <li><a href="#travel">Travel</a></li>
-      <li><a href="#kitchen">Kitchen</a></li>
-      <li><a href="#productivity">Productivity</a></li>
-      <li><a href="#universe">Universe</a></li>
-      <li><a href="#connect">Connect</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button id="theme-toggle" aria-label="Toggle theme">
-        <span class="toggle-icon icon-sun">☀</span>
-        <span class="toggle-icon icon-moon">◐</span>
-      </button>
-      <button id="menu-toggle" aria-label="Open menu">☰</button>
+<header class="appbar">
+  <div class="appbar-inner">
+    <a class="brand" href="#main" aria-label="Auragika, back to top">
+      <span class="brand-mark">{{ partial "icon.html" "spark" }}</span>
+      <span>Aura<span class="accent">gika</span></span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#apps">Apps</a>
+      <a href="#next">Next</a>
+      <a href="#us">Us</a>
+    </nav>
+    <div class="appbar-actions">
+      <button id="theme-btn" class="icon-btn" type="button" aria-label="Switch to light theme"></button>
     </div>
-  </nav>
-
-  <!-- ══ MOBILE MENU ══ -->
-  <div id="mobile-menu" role="dialog" aria-modal="true">
-    <button id="menu-close" aria-label="Close menu">✕</button>
-    <a href="#home"         class="mobile-link">Home</a>
-    <a href="#travel"       class="mobile-link">Travel</a>
-    <a href="#kitchen"      class="mobile-link">Kitchen</a>
-    <a href="#productivity" class="mobile-link">Productivity</a>
-    <a href="#universe"     class="mobile-link">Universe</a>
-    <a href="#connect"      class="mobile-link">Connect</a>
   </div>
+</header>
 
-  <!-- ══════════════════════════════════════════
-       HERO
-  ═══════════════════════════════════════════ -->
-  <section id="home">
-    <div class="hero-bg" aria-hidden="true"
-         style="background-image:url('{{ $bg1.RelPermalink }}')"></div>
-
-    <div class="hero-content">
-      <div class="hero-label" id="hero-label">✦ &nbsp; Ruchika &amp; Anurag's World &nbsp; ✦</div>
-
-      <h1 class="hero-title">
-        <span class="glitch" data-text="{{ .Site.Title }}">{{ .Site.Title }}</span>
-      </h1>
-
-      <p class="hero-subtitle" id="hero-sub">
-        Travel plans. Culinary adventures. Productivity systems.<br>
-        Two people. One universe.
+<main id="main" tabindex="-1">
+  {{/* ── Hero ── */}}
+  <section class="hero">
+    <div class="hero-aurora" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="page hero-inner">
+      <span class="pill pill-accent hero-in" style="--d:0ms">Ruchika &amp; Anurag</span>
+      <h1 class="hero-title hero-in" style="--d:80ms">Auragika</h1>
+      <p class="hero-serif hero-in" style="--d:160ms">Two people. One universe.</p>
+      <p class="hero-merge mono hero-in" style="--d:240ms" aria-label="Auragika is Anurag plus Ruchika">
+        <span aria-hidden="true"><b>A</b>n<b>urag</b> <i>+</i> <b>Ru</b>ch<b>ika</b></span>
       </p>
-
-      <div class="hero-persons" id="hero-persons">
-        <div class="person-card glass-card" id="card-ruchika" data-tilt>
-          <div class="person-avatar" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6)">
-            <img src="{{ $nova.RelPermalink }}" alt="Ruchika" fetchpriority="high">
-          </div>
-          <div class="person-name">Ruchika</div>
-          <div class="person-role">Creator &amp; Advisor</div>
-        </div>
-        <div class="person-connector" aria-hidden="true">✦</div>
-        <div class="person-card glass-card" id="card-anurag" data-tilt>
-          <div class="person-avatar">
-            <img src="{{ $devon.RelPermalink }}" alt="Anurag" fetchpriority="high">
-          </div>
-          <div class="person-name">Anurag</div>
-          <div class="person-role">Explorer &amp; Builder</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="hero-scroll-indicator" id="scroll-indicator">
-      <div class="scroll-line"></div>
-      <span>Explore</span>
-    </div>
-  </section>
-
-  <!-- ══ ABOUT STRIP ══ -->
-  <div class="about-strip" id="about-strip">
-    <div class="about-strip-inner">
-      <span class="about-strip-label">What we're about</span>
-      <div class="about-tags">
-        <span class="atag">✈&nbsp; Travel</span>
-        <span class="atag">🍳&nbsp; Cooking</span>
-        <span class="atag">⚡&nbsp; Productivity</span>
-        <span class="atag">📖&nbsp; Routines</span>
-        <span class="atag">💰&nbsp; Finance</span>
-        <span class="atag">🌍&nbsp; Destinations</span>
-        <span class="atag">🎯&nbsp; Goals</span>
-        <span class="atag">🍜&nbsp; Recipes</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       TRAVEL  ·  card: image LEFT
-  ═══════════════════════════════════════════ -->
-  <section id="travel">
-    <div class="sec-card-outer">
-      <div class="sec-card">
-
-        <div class="sec-card-img">
-          <img src="{{ $bg2.RelPermalink }}" alt="Travel destinations" loading="lazy">
-        </div>
-
-        <div class="sec-card-body">
-          <span class="sec-card-num" aria-hidden="true">01</span>
-          <span class="sec-card-label">01 / 05</span>
-          <span class="section-tag">✈ Travel</span>
-          <h2 class="section-title">Explore the World</h2>
-          <p class="section-sub">Hand-picked destinations, itineraries and travel tips curated from our own adventures around the globe.</p>
-          <a href="#travel-content" class="sec-card-btn">Explore</a>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="section-content" id="travel-content">
-      <div class="travel-grid">
-        <div class="travel-card glass-card">
-          <div class="travel-card-img"><span class="card-emoji">🏔️</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">Mountain Escape</div>
-            <div class="travel-card-title">Destination Name</div>
-            <div class="travel-card-desc">A short description of this amazing place and what makes it special for a trip.</div>
-          </div>
-        </div>
-        <div class="travel-card glass-card">
-          <div class="travel-card-img" style="background:linear-gradient(135deg,#0891b2,#0ea5e9)"><span class="card-emoji">🌊</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">Beach Getaway</div>
-            <div class="travel-card-title">Destination Name</div>
-            <div class="travel-card-desc">A short description of this coastal paradise and the best time to visit.</div>
-          </div>
-        </div>
-        <div class="travel-card glass-card">
-          <div class="travel-card-img" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><span class="card-emoji">🏛️</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">Cultural Journey</div>
-            <div class="travel-card-title">Destination Name</div>
-            <div class="travel-card-desc">History, art and local flavors in one unforgettable cultural experience.</div>
-          </div>
-        </div>
-        <div class="travel-card glass-card">
-          <div class="travel-card-img" style="background:linear-gradient(135deg,#059669,#10b981)"><span class="card-emoji">🌿</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">Nature Retreat</div>
-            <div class="travel-card-title">Destination Name</div>
-            <div class="travel-card-desc">Disconnect from the world and reconnect with nature in this serene haven.</div>
-          </div>
-        </div>
-        <div class="travel-card glass-card">
-          <div class="travel-card-img" style="background:linear-gradient(135deg,#db2777,#ec4899)"><span class="card-emoji">🌆</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">City Break</div>
-            <div class="travel-card-title">Destination Name</div>
-            <div class="travel-card-desc">Vibrant city life, rooftop cafes and endless exploration awaits.</div>
-          </div>
-        </div>
-        <div class="travel-card glass-card">
-          <div class="travel-card-img" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)"><span class="card-emoji">🗺️</span></div>
-          <div class="travel-card-body">
-            <div class="travel-card-category">Off The Beaten Path</div>
-            <div class="travel-card-title">Hidden Gem</div>
-            <div class="travel-card-desc">A secret spot only the adventurous know about. Worth every bit of effort.</div>
-          </div>
-        </div>
+      <p class="lede hero-lede hero-in" style="--d:320ms">Travel plans, kitchen experiments and the small apps we build to run our days, all in one place.</p>
+      <div class="hero-actions hero-in" style="--d:400ms">
+        <a class="btn btn-primary btn-lg" href="#apps">Explore the apps {{ partial "icon.html" "down" }}</a>
+        <a class="btn btn-secondary btn-lg" href="#us">Meet us</a>
       </div>
     </div>
   </section>
 
-  <div class="section-divider"></div>
-
-  <!-- ══════════════════════════════════════════
-       KITCHEN  ·  card: image RIGHT
-  ═══════════════════════════════════════════ -->
-  <section id="kitchen">
-    <div class="sec-card-outer">
-      <div class="sec-card sec-card--img-right sec-card--tinted">
-
-        <div class="sec-card-img">
-          <img src="{{ $bg3.RelPermalink }}" alt="Culinary adventures" loading="lazy">
-        </div>
-
-        <div class="sec-card-body">
-          <span class="sec-card-num" aria-hidden="true">02</span>
-          <span class="sec-card-label">02 / 05</span>
-          <span class="section-tag">🍳 Kitchen</span>
-          <h2 class="section-title">Culinary Adventures</h2>
-          <p class="section-sub">Recipes, meal plans and cooking tips we love — from quick weekday meals to slow weekend feasts.</p>
-          <a href="#kitchen-content" class="sec-card-btn">Discover</a>
-        </div>
-
+  {{/* ── Apps ── */}}
+  <section id="apps" class="page section">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">The universe</p>
+        <h2 class="h1">Apps we built</h2>
       </div>
+      <span class="pill pill-muted"><span class="live-dot" aria-hidden="true"></span><span class="mono">{{ len hugo.Data.apps }}</span>&nbsp;live</span>
     </div>
-
-    <div class="section-content" id="kitchen-content">
-      <div class="kitchen-grid">
-        <div class="kitchen-featured glass-card">
-          <div class="kitchen-featured-img">🍲</div>
-          <div class="kitchen-featured-body">
-            <div class="kitchen-featured-tag">⭐ Featured Recipe</div>
-            <div class="kitchen-featured-title">Our Favourite Dish</div>
-            <div class="kitchen-featured-desc">Replace this with your actual featured dish and a short description that makes people want to cook it right away.</div>
-          </div>
-        </div>
-        <div class="recipe-card glass-card">
-          <div class="recipe-icon">🥗</div>
-          <div class="recipe-info">
-            <h4>Recipe Name</h4>
-            <p>Short description — what it tastes like and why you love it.</p>
-            <div class="recipe-meta">
-              <span class="recipe-badge">🕐 30 min</span>
-              <span class="recipe-badge">Easy</span>
-            </div>
-          </div>
-        </div>
-        <div class="recipe-card glass-card">
-          <div class="recipe-icon">🍜</div>
-          <div class="recipe-info">
-            <h4>Recipe Name</h4>
-            <p>Short description — what it tastes like and why you love it.</p>
-            <div class="recipe-meta">
-              <span class="recipe-badge">🕐 45 min</span>
-              <span class="recipe-badge">Medium</span>
-            </div>
-          </div>
-        </div>
-        <div class="recipe-card glass-card">
-          <div class="recipe-icon">🧁</div>
-          <div class="recipe-info">
-            <h4>Recipe Name</h4>
-            <p>Short description — what it tastes like and why you love it.</p>
-            <div class="recipe-meta">
-              <span class="recipe-badge">🕐 1 hr</span>
-              <span class="recipe-badge">Weekend</span>
-            </div>
-          </div>
-        </div>
-        <div class="recipe-card glass-card">
-          <div class="recipe-icon">🫖</div>
-          <div class="recipe-info">
-            <h4>Recipe Name</h4>
-            <p>Short description — what it tastes like and why you love it.</p>
-            <div class="recipe-meta">
-              <span class="recipe-badge">🕐 10 min</span>
-              <span class="recipe-badge">Quick</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ul class="apps">
+      {{- range $i, $app := hugo.Data.apps }}
+      <li class="reveal{{ if $app.featured }} is-featured{{ end }}" style="--d:{{ mul $i 60 }}ms">
+        <a class="card app-card" href="{{ $app.url }}" target="_blank" rel="noopener">
+          <span class="app-icon">{{ partial "icon.html" $app.icon }}</span>
+          <span class="app-body">
+            <span class="h3 app-name">{{ $app.name }}{{ if $app.featured }} <span class="pill pill-accent">Featured</span>{{ end }}</span>
+            <span class="muted app-desc">{{ $app.desc }}</span>
+          </span>
+          <span class="app-foot">
+            <span class="mono app-host">{{ (urls.Parse $app.url).Host }}</span>
+            <span class="app-go">{{ partial "icon.html" "arrow" }}</span>
+          </span>
+          {{- if $app.featured }}<span class="app-mark" aria-hidden="true">{{ partial "icon.html" $app.icon }}</span>{{ end }}
+        </a>
+      </li>
+      {{- end }}
+    </ul>
   </section>
 
-  <div class="section-divider"></div>
-
-  <!-- ══════════════════════════════════════════
-       PRODUCTIVITY  ·  card: image LEFT
-  ═══════════════════════════════════════════ -->
-  <section id="productivity">
-    <div class="sec-card-outer">
-      <div class="sec-card">
-
-        <div class="sec-card-img">
-          <img src="{{ $bg4.RelPermalink }}" alt="Productivity tools" loading="lazy">
-        </div>
-
-        <div class="sec-card-body">
-          <span class="sec-card-num" aria-hidden="true">03</span>
-          <span class="sec-card-label">03 / 05</span>
-          <span class="section-tag">⚡ Productivity</span>
-          <h2 class="section-title">Tools &amp; Systems</h2>
-          <p class="section-sub">Apps and systems we've built to make life more intentional — from finances to daily routines.</p>
-          <a href="#productivity-content" class="sec-card-btn">View Tools</a>
-        </div>
-
+  {{/* ── Coming next ── */}}
+  <section id="next" class="page section">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">On the way</p>
+        <h2 class="h1">What we're making next</h2>
       </div>
     </div>
-
-    <div class="section-content" id="productivity-content">
-      <div class="tools-grid">
-        <a href="https://auragikafinance.netlify.app/" class="tool-card glass-card" target="_blank" rel="noopener">
-          <div class="tool-icon purple">💰</div>
-          <div class="tool-name">Auragika Finance</div>
-          <div class="tool-desc">Track expenses, manage budgets, and gain clarity over your shared and personal finances.</div>
-          <span class="tool-badge live">● Live</span>
-        </a>
-        <a href="https://auragikaroutine.netlify.app/" class="tool-card glass-card" target="_blank" rel="noopener">
-          <div class="tool-icon cyan">✅</div>
-          <div class="tool-name">Auragika Routine</div>
-          <div class="tool-desc">Daily routines, habit tracking, and todo lists designed for two. Stay in sync.</div>
-          <span class="tool-badge live">● Live</span>
-        </a>
-        <a href="https://aurgikasubtrack.netlify.app/" class="tool-card glass-card" target="_blank" rel="noopener">
-          <div class="tool-icon violet">💳</div>
-          <div class="tool-name">Subtrack</div>
-          <div class="tool-desc">Track every subscription — monthly burn, renewal alerts, and category insights in one place.</div>
-          <span class="tool-badge live">● Live</span>
-        </a>
-        <a href="https://auragikatimeboxing.netlify.app/" class="tool-card glass-card" target="_blank" rel="noopener">
-          <div class="tool-icon blue">⏱</div>
-          <div class="tool-name">TimeBoxing</div>
-          <div class="tool-desc">Time-block your day intentionally. Focus sessions, deep work, and structured time management.</div>
-          <span class="tool-badge live">● Live</span>
-        </a>
-        <a href="https://auragikagrove.netlify.app/" class="tool-card glass-card" target="_blank" rel="noopener">
-          <div class="tool-icon green">🌿</div>
-          <div class="tool-name">Grove</div>
-          <div class="tool-desc">Your personal wellness companion. Build habits, track mood, and grow together.</div>
-          <span class="tool-badge live">● Live</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ══════════════════════════════════════════
-       UNIVERSE  ·  card: image RIGHT
-  ═══════════════════════════════════════════ -->
-  <section id="universe">
-    <div class="sec-card-outer">
-      <div class="sec-card sec-card--img-right sec-card--tinted">
-
-        <div class="sec-card-img">
-          <img src="{{ $bg5.RelPermalink }}" alt="Ruchika and Anurag" loading="lazy">
-        </div>
-
-        <div class="sec-card-body">
-          <span class="sec-card-num" aria-hidden="true">04</span>
-          <span class="sec-card-label">04 / 05</span>
-          <span class="section-tag">✦ Universe</span>
-          <h2 class="section-title">The Auragika Story</h2>
-          <p class="section-sub">Born from two names — Ruchika and Anurag. We explore the world, build things, and share everything in between.</p>
-          <a href="#universe-content" class="sec-card-btn">Our Story</a>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="section-content" id="universe-content">
-      <div class="universe-profiles">
-        <div class="profile-card glass-card">
-          <div class="profile-avatar-large" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6)">
-            <img src="{{ $nova.RelPermalink }}" alt="Ruchika" loading="lazy">
-          </div>
-          <div class="profile-name">Ruchika</div>
-          <div class="profile-title">Creator · Advisor · Dreamer</div>
-          <p class="profile-bio">This is where Ruchika's bio will go. A few sentences about her passions and what she brings to the Auragika universe.</p>
-          <div class="profile-socials">
-            <a href="https://www.linkedin.com/in/ruchika-singh-20/" class="social-icon-btn" target="_blank" rel="noopener"><span class="si-icon">💼</span> LinkedIn</a>
-            <a href="https://novaarch.netlify.app/" class="social-icon-btn" target="_blank" rel="noopener"><span class="si-icon">🌐</span> Portfolio</a>
-          </div>
-        </div>
-        <div class="profile-card glass-card">
-          <div class="profile-avatar-large">
-            <img src="{{ $devon.RelPermalink }}" alt="Anurag" loading="lazy">
-          </div>
-          <div class="profile-name">Anurag</div>
-          <div class="profile-title">Builder · Explorer · Thinker</div>
-          <p class="profile-bio">This is where Anurag's bio will go. A few sentences about who you are, what you do, and what drives you.</p>
-          <div class="profile-socials">
-            <a href="https://www.linkedin.com/in/anuragkar-16/" class="social-icon-btn" target="_blank" rel="noopener"><span class="si-icon">💼</span> LinkedIn</a>
-            <a href="https://anuragkar.netlify.app/" class="social-icon-btn" target="_blank" rel="noopener"><span class="si-icon">🌐</span> Portfolio</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- ══════════════════════════════════════════
-       CONNECT  ·  card: image LEFT
-  ═══════════════════════════════════════════ -->
-  <section id="connect">
-    <div class="sec-card-outer">
-      <div class="sec-card">
-
-        <div class="sec-card-img">
-          <img src="{{ $bg6.RelPermalink }}" alt="Connect with us" loading="lazy">
-        </div>
-
-        <div class="sec-card-body">
-          <span class="sec-card-num" aria-hidden="true">05</span>
-          <span class="sec-card-label">05 / 05</span>
-          <span class="section-tag">💬 Connect</span>
-          <h2 class="section-title">Say Hello</h2>
-          <p class="section-sub">We love hearing from you. Reach us anywhere or drop a message directly — we read everything.</p>
-          <a href="#connect-content" class="sec-card-btn">Get in Touch</a>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="section-content" id="connect-content">
-      <div class="connect-grid">
+    <ul class="soon">
+      <li class="soon-card reveal">
+        <span class="app-icon">{{ partial "icon.html" "compass" }}</span>
         <div>
-          <div style="margin-bottom:8px;font-size:0.85rem;color:var(--text2);font-weight:500;letter-spacing:0.05em;text-transform:uppercase">Find us on</div>
-          <div class="social-links-list">
-            <a href="https://www.linkedin.com/in/ruchika-singh-20/" class="social-link-item glass-card" target="_blank" rel="noopener">
-              <span class="social-link-icon">💼</span>
-              <div>
-                <div class="social-link-name">Ruchika on LinkedIn</div>
-                <div class="social-link-handle">linkedin.com/in/ruchika-singh-20</div>
-              </div>
-              <span class="social-link-arrow">→</span>
-            </a>
-            <a href="https://novaarch.netlify.app/" class="social-link-item glass-card" target="_blank" rel="noopener">
-              <span class="social-link-icon">🌐</span>
-              <div>
-                <div class="social-link-name">Ruchika's Portfolio</div>
-                <div class="social-link-handle">novaarch.netlify.app</div>
-              </div>
-              <span class="social-link-arrow">→</span>
-            </a>
-            <a href="https://www.linkedin.com/in/anuragkar-16/" class="social-link-item glass-card" target="_blank" rel="noopener">
-              <span class="social-link-icon">💼</span>
-              <div>
-                <div class="social-link-name">Anurag on LinkedIn</div>
-                <div class="social-link-handle">linkedin.com/in/anuragkar-16</div>
-              </div>
-              <span class="social-link-arrow">→</span>
-            </a>
-            <a href="https://anuragkar.netlify.app/" class="social-link-item glass-card" target="_blank" rel="noopener">
-              <span class="social-link-icon">🌐</span>
-              <div>
-                <div class="social-link-name">Anurag's Portfolio</div>
-                <div class="social-link-handle">anuragkar.netlify.app</div>
-              </div>
-              <span class="social-link-arrow">→</span>
-            </a>
-          </div>
+          <h3 class="h3">Travel journal <span class="pill pill-muted">Soon</span></h3>
+          <p class="muted">Places we loved, itineraries that worked and the tips we wish we'd had.</p>
         </div>
-        <div class="contact-form-card glass-card">
-          <div class="form-title">Send a Message</div>
-          <div class="form-sub">We'll get back to you at the earliest.</div>
-          <form id="contact-form" novalidate>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="form-name">Your Name</label>
-                <input type="text" id="form-name" name="name" placeholder="Ruchika" required />
-              </div>
-              <div class="form-group">
-                <label for="form-email">Email</label>
-                <input type="email" id="form-email" name="email" placeholder="you@email.com" required />
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="form-subject">Subject</label>
-              <input type="text" id="form-subject" name="subject" placeholder="Travel collab? Recipe share? Just saying hi!" />
-            </div>
-            <div class="form-group">
-              <label for="form-message">Message</label>
-              <textarea id="form-message" name="message" placeholder="Tell us anything..."></textarea>
-            </div>
-            <button type="submit" class="btn-submit" id="form-submit">Send Message ✦</button>
-          </form>
-          <div class="form-success" id="form-success">✦ Message sent! We'll be in touch soon.</div>
+      </li>
+      <li class="soon-card reveal" style="--d:60ms">
+        <span class="app-icon">{{ partial "icon.html" "utensils" }}</span>
+        <div>
+          <h3 class="h3">Our kitchen <span class="pill pill-muted">Soon</span></h3>
+          <p class="muted">Recipes we cook on repeat, from ten-minute weekday meals to slow weekend feasts.</p>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </section>
 
-  <!-- ══ FOOTER ══ -->
-  <footer>
-    <div class="footer-logo">AU✦</div>
-    <div class="footer-copy">© 2026 {{ .Site.Title }}. Made with ♥ by Ruchika &amp; Anurag.</div>
-    <div class="footer-links">
-      <a href="#home">Home</a>
-      <a href="#travel">Travel</a>
-      <a href="#kitchen">Kitchen</a>
-      <a href="#connect">Connect</a>
+  {{/* ── Us ── */}}
+  <section id="us" class="page section">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">The story</p>
+        <h2 class="h1">Born from two names</h2>
+        <p class="lede story">Ruchika and Anurag. We explore the world, build things, and share everything in between.</p>
+      </div>
     </div>
-  </footer>
+    <ul class="people">
+      {{- range $i, $p := hugo.Data.people }}
+      {{- $img := (resources.Get $p.photo).Resize "192x webp q85" }}
+      <li class="card card-pad person reveal" style="--d:{{ mul $i 80 }}ms">
+        <img class="avatar person-photo" src="{{ $img.RelPermalink }}" width="72" height="72" alt="{{ $p.name }}" loading="lazy">
+        <div class="person-text">
+          <h3 class="h2">{{ $p.name }}</h3>
+          <p class="muted">{{ $p.role }}</p>
+        </div>
+        <div class="person-links">
+          {{- range $p.links }}
+          <a class="btn btn-secondary btn-sm" href="{{ .url }}" target="_blank" rel="noopener">{{ partial "icon.html" .icon }}{{ .label }}</a>
+          {{- end }}
+        </div>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+</main>
 
-  <!-- ══ CHAT FAB ══ -->
-  <button id="chat-fab" aria-label="Send us a message">💬</button>
-
+<footer class="footer">
+  <div class="page footer-inner">
+    <span class="brand brand-sm"><span class="brand-mark">{{ partial "icon.html" "spark" }}</span>Auragika</span>
+    <span class="fine">© <span class="mono">{{ now.Year }}</span> Auragika. All rights reserved. · Made by Ruchika &amp; Anurag</span>
+  </div>
+</footer>
 {{ end }}

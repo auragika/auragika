@@ -1,11 +1,11 @@
 {
   "name": "Auragika Universe",
   "short_name": "Auragika",
-  "description": "Anurag & Ruchika's world of travel, cooking and productivity.",
+  "description": "Ruchika & Anurag: the apps we build, the places we go and what we cook.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#04060f",
-  "theme_color": "#8b5cf6",
+  "background_color": "#0a0b10",
+  "theme_color": "#0a0b10",
   "orientation": "portrait-primary",
   "icons": [
     {
