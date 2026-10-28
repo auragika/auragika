@@ -3,7 +3,7 @@
   command = "hugo --minify --baseURL \"$URL\""
 
 [build.environment]
-  HUGO_VERSION = "0.105.0"
+  HUGO_VERSION = "0.163.3"
 
 # SPA: serve index.html for all routes
 [[redirects]]

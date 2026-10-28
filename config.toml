@@ -1,5 +1,5 @@
 title = "Auragika Universe"
-baseURL = "https://auragika.netlify.app/"
+baseURL = "https://auragika.com/"
 disableKinds = ["page", "section", "taxonomy", "term"]
 
 enableEmoji = true
