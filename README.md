@@ -2,7 +2,7 @@
 
 > Two people. One universe.
 
-Ruchika & Anurag's corner of the internet: the apps we build, the places we go and what we cook. Named **Auragika** (**A**n**urag** + Ruch**ika**).
+Ruchika & Anurag's corner of the internet: the apps we build, the places we go and what we cook. Named **Auragika** (**A**n**urag** + **Ru**ch**ika**).
 
 Live at [auragika.com](https://auragika.com)
 
