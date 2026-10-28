@@ -1,5 +1,5 @@
 # Apps shown in the "Apps we built" grid, in display order.
-# icon: a key from layouts/partials/icon.html. featured: a full-width banner above the rest.
+# icon: a key from layouts/partials/icon.html. featured: a 2×2 block on wide screens (one featured + five fills 3×3).
 - name: QuizClash
   url: https://quizclash.auragika.com
   icon: bolt
@@ -13,10 +13,6 @@
   url: https://auragikaripple.netlify.app
   icon: target
   desc: Break life goals into steps and watch the goal bubble fill, earning coins as you go.
-- name: TimeBoxing
-  url: https://auragikatimeboxing.netlify.app
-  icon: clock
-  desc: Block out the day on purpose, with focus sessions for deep work.
 - name: Grove
   url: https://auragikagrove.netlify.app
   icon: leaf
