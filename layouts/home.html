@@ -5,13 +5,9 @@
     <div class="hero-aurora" aria-hidden="true"></div>
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="page hero-inner">
-      <span class="pill pill-accent hero-in" style="--d:0ms">Ruchika &amp; Anurag</span>
-      <h1 class="hero-title hero-in" style="--d:80ms">{{ site.Title }}</h1>
-      <p class="hero-serif hero-in" style="--d:160ms">Two people. One universe.</p>
-      <p class="hero-merge mono hero-in" style="--d:240ms">
-        <span class="sr-only">The name comes from Anurag plus Ruchika.</span>
-        <span aria-hidden="true"><b>A</b>n<b>urag</b> <i>+</i> <b>Ru</b>ch<b>ika</b></span>
-      </p>
+      <h1 class="hero-title hero-in" style="--d:0ms">{{ site.Title }}</h1>
+      <p class="hero-serif hero-in" style="--d:120ms">Two people. One universe.</p>
+      <p class="hero-tag mono hero-in" style="--d:240ms">A little magic in everything</p>
       <p class="lede hero-lede hero-in" style="--d:320ms">Travel plans, kitchen experiments and the small apps we build to run our days, all in one place.</p>
       <div class="hero-actions hero-in" style="--d:400ms">
         <a class="btn btn-primary btn-lg" href="#apps">Explore the apps {{ partial "icon.html" "down" }}</a>
@@ -48,7 +44,7 @@
 
   {{/* ── Us ── */}}
   <section id="us" class="page section">
-    {{ partial "section-head.html" (dict "eyebrow" "The story" "title" "Born from two names" "lede" "Ruchika and Anurag. We explore the world, build things, and share everything in between.") }}
+    {{ partial "section-head.html" (dict "eyebrow" "The story" "title" "Born from two names" "lede" "Auragika comes from Anurag + Ruchika. We explore the world, build things, and share everything in between.") }}
     <ul class="people">
       {{- range $i, $p := hugo.Data.people }}
       {{ partial "person-card.html" (dict "person" $p "i" $i) }}

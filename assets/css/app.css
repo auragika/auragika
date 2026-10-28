@@ -52,16 +52,13 @@ main:focus { outline: none; }
           mask-image: radial-gradient(55% 60% at 50% 42%, #000 20%, transparent 72%);
 }
 .hero-title {
-  margin-top: 22px;
   font-size: clamp(3.4rem, 14vw, 8rem); font-weight: 800; letter-spacing: -.055em; line-height: .95;
   background: linear-gradient(180deg, var(--text) 35%, color-mix(in srgb, var(--text) 45%, var(--accent)));
   -webkit-background-clip: text; background-clip: text; color: transparent;
   padding-bottom: .14em; margin-bottom: -.08em;
 }
 .hero-serif { margin-top: 10px; font-family: var(--font-serif); font-style: italic; font-size: clamp(1.6rem, 4.6vw, 2.4rem); line-height: 1.2; color: var(--text-2); }
-.hero-merge { margin-top: 18px; font-size: .92rem; letter-spacing: .14em; color: var(--text-3); }
-.hero-merge b { color: var(--accent); font-weight: 700; }
-.hero-merge i { font-style: normal; padding: 0 .35em; }
+.hero-tag { margin-top: 18px; font-size: .82rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
 .hero-lede { margin-top: 18px; max-width: 34rem; }
 .hero-actions { margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .hero-in { animation: viewIn .5s cubic-bezier(.16, 1, .3, 1) backwards; animation-delay: var(--d, 0ms); }
