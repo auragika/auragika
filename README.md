@@ -4,7 +4,7 @@
 
 Anurag & Ruchika's shared corner of the internet — a Hugo-powered landing page for everything they explore, build, and share together. Named **Auragika** (Anurag + Ruchika).
 
-Live at [auragika.netlify.app](https://auragika.netlify.app)
+Live at [auragika.com](https://auragika.com)
 
 ---
 
@@ -78,7 +78,7 @@ Live at [auragika.netlify.app](https://auragika.netlify.app)
 ## Project Structure
 
 ```
-auragika-universe/
+auragika/
 ├── assets/
 │   ├── css/
 │   │   └── app.css          ← Full site styles: hero, sections, glass cards, cursor, animations
@@ -108,13 +108,13 @@ Open `http://localhost:1313`.
 
 ## Deploy to Netlify
 
-**1. Import the repo** — [app.netlify.com](https://app.netlify.com) → Add new site → Import from Git → select `anuragdevon/auragika-universe`.
+**1. Import the repo** — [app.netlify.com](https://app.netlify.com) → Add new site → Import from Git → select `auragika/auragika`.
 
 **2. Build settings** (from `netlify.toml`):
 
 | Setting | Value |
 |---|---|
-| Build command | `hugo --minify` |
+| Build command | `hugo --minify --baseURL "$URL"` |
 | Publish directory | `public` |
 | Hugo version | `0.163.3` |
 
