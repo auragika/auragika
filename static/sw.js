@@ -3,7 +3,7 @@
    Service Worker — cache-first for assets, network-first for HTML
    ============================================================ */
 
-var CACHE = 'auragika-v2';
+var CACHE = 'auragika-v3';
 var CORE  = ['/', '/index.html'];
 
 self.addEventListener('install', function (e) {

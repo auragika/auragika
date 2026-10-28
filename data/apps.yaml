@@ -1,0 +1,27 @@
+# Apps shown in the "Apps we built" grid, in display order.
+# icon: a key from layouts/partials/icon.html. featured: spans two columns on wide screens.
+- name: QuizClash
+  url: https://quizclash.auragika.com
+  icon: bolt
+  featured: true
+  desc: Real-time quiz battles with friends. Go one-on-one or fill a room of up to eight, and watch the answers land live.
+- name: Finance
+  url: https://auragikafinance.netlify.app
+  icon: wallet
+  desc: Track expenses, plan budgets and see where shared and personal money goes.
+- name: Routine
+  url: https://auragikaroutine.netlify.app
+  icon: check
+  desc: Daily routines, habits and to-dos, designed for two and kept in sync.
+- name: Subtrack
+  url: https://aurgikasubtrack.netlify.app
+  icon: card
+  desc: Every subscription in one place, with monthly burn and renewal reminders.
+- name: TimeBoxing
+  url: https://auragikatimeboxing.netlify.app
+  icon: clock
+  desc: Block out the day on purpose, with focus sessions for deep work.
+- name: Grove
+  url: https://auragikagrove.netlify.app
+  icon: leaf
+  desc: A calm wellness companion for habits and mood, built to grow together.

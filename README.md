@@ -1,65 +1,48 @@
-# Auragika Universe
+# Auragika
 
-> Travel plans. Culinary adventures. Productivity systems. Two people. One universe.
+> Two people. One universe.
 
-Anurag & Ruchika's shared corner of the internet — a Hugo-powered landing page for everything they explore, build, and share together. Named **Auragika** (Anurag + Ruchika).
+Ruchika & Anurag's corner of the internet: the apps we build, the places we go and what we cook. Named **Auragika** (**A**n**urag** + Ruch**ika**).
 
 Live at [auragika.com](https://auragika.com)
 
 ---
 
-## Preview
-
-```
-┌─────────────────────────────────────────┐
-│  AU✦                                    │
-│  Home · Travel · Kitchen · Productivity │
-│  Universe · Connect                     │
-│                                         │
-│  ┌───────────────────────────────────┐  │
-│  │   ✦  Ruchika & Anurag's World  ✦  │  │
-│  │                                   │  │
-│  │   Auragika Universe               │  │
-│  │                                   │  │
-│  │   Travel plans. Culinary          │  │
-│  │   adventures. Productivity        │  │
-│  │   systems. Two people.            │  │
-│  │   One universe.                   │  │
-│  │                                   │  │
-│  │   [Ruchika]   ✦   [Anurag]        │  │
-│  └───────────────────────────────────┘  │
-│                                         │
-│  ✈ Travel  🍳 Kitchen  ⚡ Productivity  │
-└─────────────────────────────────────────┘
-```
-
----
-
 ## Sections
 
-| Section | Icon | Content |
-|---|---|---|
-| **Home** | ✦ | Hero with animated glitch title, person cards (Ruchika & Anurag), about tag strip |
-| **Travel** | ✈ | Destination cards — mountain escapes, beaches, cultural journeys, hidden gems |
-| **Kitchen** | 🍳 | Featured recipe highlight + recipe card grid with cook time and difficulty |
-| **Productivity** | ⚡ | Links to live tools (Finance Tracker, Routine & Todo) + upcoming tools (Travel Planner, Goals Dashboard) |
-| **Universe** | ✦ | The Auragika story — profile cards, bios, and social links for both |
-| **Connect** | 💬 | Social links (Instagram, YouTube, Website) + contact form |
+| Section | Content |
+|---|---|
+| **Hero** | The Auragika wordmark, how the name is made, and the two main actions |
+| **Apps** | Every live app, with QuizClash featured; driven by `data/apps.yaml` |
+| **Next** | What's on the way (travel journal, our kitchen) |
+| **Us** | Ruchika and Anurag, with LinkedIn and portfolio links; driven by `data/people.yaml` |
+
+To add or change an app or a person, edit the YAML file; the page picks it up.
 
 ---
 
-## Features
+## Theming
 
-- **Animated custom cursor** — dot + ring that follows the pointer on desktop
-- **Glitch title effect** — CSS glitch animation on the hero heading
-- **Glass card design** — frosted-glass cards with backdrop blur throughout
-- **Tilt cards** — `data-tilt` person cards on the hero
-- **Smooth scroll navigation** — navbar links scroll to sections with offset
-- **Mobile menu** — full-screen overlay nav for small screens
-- **Page loader** — animated progress bar on initial load
-- **Contact form** — sends messages directly from the page
-- **Alternating section layout** — image-left and image-right alternating cards
-- **Dark design** — dark background with violet and cyan accent palette
+The site uses the shared **Auragika theme**, the same system QuizClash uses: dark first with a matching light theme, **one** accent colour, layered surfaces, Inter for text and JetBrains Mono for numbers.
+
+| File | What it is | Edit it? |
+|---|---|---|
+| `assets/css/auragika.css` | The shared theme (tokens and generic components), copied unchanged from the `auragika-theme` skill | **No.** Update it by replacing the whole file with the latest copy |
+| `assets/css/app.css` | This site: the accent override (top of the file) and the site's own components, built only from theme tokens | Yes |
+
+Hugo concatenates the two (theme first), then minifies and fingerprints the result, so browsers and the service worker never serve a stale stylesheet.
+
+**Rules that keep it looking right**
+
+- **Accent:** violet. To change it, edit all four `--accent*` tokens plus `--bg-glow` in **both** theme blocks at the top of `app.css`. The light theme needs the darker shade.
+- Use theme tokens (`--surface`, `--text-2`, `--accent-soft` …), never raw colours.
+- Use one `.btn-primary` per view and `.mono` for numbers.
+- Green and red are only for success and error.
+- Motion stays small and honours `prefers-reduced-motion`.
+- The one site-specific type token is `--font-serif` (Instrument Serif italic). It's used only for the hero tagline.
+- Before merging a visual change, check it at 375 px and desktop width, in light and dark, with no horizontal scroll.
+
+The theme is toggled with the button in the app bar and stored in `localStorage` (`au_theme`). A tiny script in `<head>` applies it before first paint, so there's no flash.
 
 ---
 
@@ -67,11 +50,12 @@ Live at [auragika.com](https://auragika.com)
 
 | Layer | Choice | Notes |
 |---|---|---|
-| Site generator | Hugo 0.163.3 | Zero-config static output |
-| Styling | CSS custom properties | Dark palette with glass morphism |
-| Deploy | Netlify | Auto-deploy on push |
+| Site generator | Hugo 0.163.3 | Data-driven sections, image processing, CSS/JS fingerprinting |
+| Styling | Auragika theme + plain CSS | No framework, no build step beyond Hugo |
+| Scripts | One small vanilla JS file | Theme toggle, scroll reveal, card spotlight, service worker |
+| Deploy | Netlify | Builds on push; preview on every PR |
 
-**No build pipeline.** Zero npm, zero bundler. All logic is plain vanilla JavaScript.
+**No npm, no bundler.** Hugo is the only build tool.
 
 ---
 
@@ -81,17 +65,22 @@ Live at [auragika.com](https://auragika.com)
 auragika/
 ├── assets/
 │   ├── css/
-│   │   └── app.css          ← Full site styles: hero, sections, glass cards, cursor, animations
-│   └── js/
-│       └── app.js           ← Cursor, scroll behavior, tilt effect, mobile menu, contact form
+│   │   ├── auragika.css     ← Shared theme (don't edit, replace)
+│   │   └── app.css          ← Accent + site components
+│   ├── images/              ← Profile photos (resized by Hugo)
+│   └── js/app.js            ← Theme toggle, reveal, spotlight, service worker
+├── data/
+│   ├── apps.yaml            ← The apps grid
+│   └── people.yaml          ← The two of us
 ├── layouts/
-│   └── _default/
-│       ├── baseof.html      ← HTML shell: meta, Hugo pipes, Open Graph
-│       └── index.html       ← Full single-page site with all 6 sections
-├── static/
-│   └── images/              ← Section background images, profile photos
-├── config.toml              ← Hugo config (Auragika Universe, anurag & ruchika)
-└── netlify.toml             ← Build command + Hugo version
+│   ├── _default/
+│   │   ├── baseof.html      ← HTML shell: head, theme pre-paint, CSS/JS
+│   │   └── index.html       ← The one-page site
+│   ├── partials/icon.html   ← Line icons
+│   └── 404.html
+├── static/                  ← manifest, service worker, app icons
+├── config.toml
+└── netlify.toml             ← Build command, Hugo version, headers
 ```
 
 ---
@@ -108,7 +97,7 @@ Open `http://localhost:1313`.
 
 ## Deploy to Netlify
 
-**1. Import the repo** — [app.netlify.com](https://app.netlify.com) → Add new site → Import from Git → select `auragika/auragika`.
+**1. Import the repo**: [app.netlify.com](https://app.netlify.com) → Add new site → Import from Git → select `auragika/auragika`.
 
 **2. Build settings** (from `netlify.toml`):
 
@@ -118,20 +107,4 @@ Open `http://localhost:1313`.
 | Publish directory | `public` |
 | Hugo version | `0.163.3` |
 
-**3. Deploy** — every push to `main` triggers a redeploy.
-
----
-
-## Roadmap
-
-- [ ] Fill in actual travel destinations and itineraries
-- [ ] Add real recipe content
-- [ ] Wire Productivity section links to live apps
-- [ ] Integrate contact form with email service (EmailJS / Formspree)
-- [ ] Add photo gallery for travel and food sections
-
----
-
-## About the Name
-
-**Auragika** = **Anurag** + Ruch**ika** — the name they use for everything they build and share together.
+**3. Deploy**: every push to `main` triggers a redeploy, and every PR gets a deploy preview.

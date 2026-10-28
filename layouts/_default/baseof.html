@@ -1,54 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="{{ .Site.Params.Description }}">
-  <title>{{ .Site.Title }} ✦</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  <meta name="description" content="{{ site.Params.Description }}">
+  <meta name="theme-color" content="#0a0b10">
+  <!-- Apply the saved theme before first paint (dark by default) so there is no flash. -->
+  <script>(function(){var d=document.documentElement,t='dark';try{t=localStorage.getItem('au_theme')||'dark'}catch(e){}d.setAttribute('data-theme',t);d.classList.add('js');})()</script>
 
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ site.Title }}">
+  <meta property="og:description" content="{{ site.Params.Description }}">
+  <meta property="og:url" content="{{ .Permalink }}">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23a78bfa'/><path d='M16 6c.5 4 1.8 6 9 10-7.2 4-8.5 6-9 10-.5-4-1.8-6-9-10 7.2-4 8.5-6 9-10z' fill='%231e1238'/></svg>">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#8b5cf6">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
-  <!-- Prevent theme flash: apply saved theme before paint -->
-  <script>(function(){var t=localStorage.getItem('au_theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;})()</script>
-
-  <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Instrument+Serif:ital@1&display=swap">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <!-- App CSS (minified) -->
-  {{ $css := resources.Get "css/app.css" | resources.Minify }}
-  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
-
-  <!-- Page-specific head extras (preload hints etc.) -->
-  {{ block "head_extra" . }}{{ end }}
+  {{- /* auragika.css is the shared theme, copied unchanged; app.css holds this site's accent and components. */}}
+  {{- $css := slice (resources.Get "css/auragika.css") (resources.Get "css/app.css") | resources.Concat "css/site.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   {{ block "main" . }}{{ end }}
 
-  <!-- GSAP (deferred — executes after HTML parsed, before DOMContentLoaded) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
-
-  <!-- App JS (minified, deferred) -->
-  {{ $js := resources.Get "js/app.js" | resources.Minify }}
-  <script src="{{ $js.RelPermalink }}" defer></script>
-
-  <!-- PWA Service Worker -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/sw.js');
-      });
-    }
-  </script>
+  {{- $js := resources.Get "js/app.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 </body>
 </html>
