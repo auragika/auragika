@@ -1,9 +1,11 @@
 # Apps shown in the "Apps we built" grid, in display order.
 # icon: a key from layouts/_partials/icon.html. featured: a 2×2 block on wide screens (one featured + five fills 3×3).
+# users (optional): a rounded count such as "300+", shown as a "Live with 300+ users" pill. Keep it honest and current.
 - name: QuizClash
   url: https://quizclash.auragika.com
   icon: bolt
   featured: true
+  users: 300+
   desc: Real-time quiz battles with friends. Go one-on-one or fill a room of up to eight, and watch the answers land live.
 - name: Routine
   url: https://auragikaroutine.netlify.app
