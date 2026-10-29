@@ -92,7 +92,8 @@ main:focus { outline: none; }
 .app-name { display: flex; align-items: center; gap: 8px; }
 .app-desc { font-size: .95rem; }
 .app-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.app-host { font-size: .78rem; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-open { font-size: .85rem; font-weight: 600; color: var(--text-3); transition: color .2s; }
+.app-card:hover .app-open { color: var(--text); }
 .app-go { flex: none; width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); transition: background-color .2s, color .2s, transform .25s; }
 .app-card:hover .app-go { background: var(--accent); color: var(--accent-ink); transform: rotate(45deg); }
 .is-featured .app-card { background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), var(--surface) 60%); }
