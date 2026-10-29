@@ -6,6 +6,9 @@
     <span class="app-body">
       <span class="h3 app-name">{{ $app.name }}{{ if $app.featured }} <span class="pill pill-accent">Featured</span>{{ end }}</span>
       <span class="muted app-desc">{{ $app.desc }}</span>
+      {{- with $app.users }}
+      <span class="pill pill-muted app-users"><span class="live-dot" aria-hidden="true"></span>Live with&nbsp;<span class="mono">{{ . }}</span>&nbsp;users</span>
+      {{- end }}
     </span>
     <span class="app-foot">
       <span class="mono app-host">{{ (urls.Parse $app.url).Host }}</span>
