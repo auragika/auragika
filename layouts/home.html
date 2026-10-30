@@ -18,7 +18,7 @@
 
   {{/* ── Apps ── */}}
   <section id="apps" class="page section">
-    {{ partial "section-head.html" (dict "eyebrow" "The universe" "title" "Apps we built" "live" (len hugo.Data.apps)) }}
+    {{ partial "section-head.html" (dict "eyebrow" "The universe" "title" "Apps we built" "live" (len (where hugo.Data.apps "beta" "!=" true))) }}
     <ul class="apps">
       {{- range $i, $app := hugo.Data.apps }}
       {{ partial "app-card.html" (dict "app" $app "i" $i) }}
