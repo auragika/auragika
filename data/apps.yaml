@@ -11,7 +11,7 @@
   desc: Real-time quiz battles with friends. Go one-on-one or fill a room of up to eight, and watch the answers land live.
 - name: Pebble
   url: https://pebble.auragika.com
-  icon: wallet
+  icon: pebble
   desc: Track expenses, plan budgets and see where shared and personal money goes.
 - name: Routine
   url: https://auragikaroutine.netlify.app
