@@ -28,8 +28,8 @@
   icon: leaf
   beta: true
   desc: A calm wellness companion for habits and mood, built to grow together.
-- name: Health
+- name: Ember
   url: https://auragika-health-tracker.netlify.app
-  icon: heart
+  icon: flame
   beta: true
   desc: Log your weight every day and keep notes and reflections alongside it.
