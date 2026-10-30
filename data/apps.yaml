@@ -19,8 +19,8 @@
   url: https://auragikagrove.netlify.app
   icon: leaf
   desc: A calm wellness companion for habits and mood, built to grow together.
-- name: Finance
-  url: https://auragikafinance.netlify.app
+- name: Pebble
+  url: https://pebble.auragika.com
   icon: wallet
   desc: Track expenses, plan budgets and see where shared and personal money goes.
 - name: Health
