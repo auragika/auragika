@@ -3,7 +3,7 @@
 # Every push to main runs them too. Nothing here deploys: production deploys are manual
 # (deploy.yml), and only for commits whose `ci-passed` is green.
 #
-# Locally: hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/
+# Locally: hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"
 #
 # Branch protection requires the `ci-passed` commit status, which only the `report` job
 # posts, and only when every check passed. A PR without a run (or after new pushes) has
@@ -72,7 +72,7 @@ jobs:
       # Ubuntu 24.04 blocks the user namespaces Chrome's sandbox needs; allow them on
       # this throwaway VM rather than running Chrome with --no-sandbox.
       - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-      - run: node --test tests/browser/
+      - run: node --test "tests/browser/*.test.mjs"
         env:
           CHROME_PATH: /usr/bin/google-chrome
 

@@ -1,6 +1,6 @@
 // The production build (public/) in headless Chrome, served with the real static/_headers
 // (CSP enforced), at phone and desktop width in dark and light. Run `hugo --minify` first,
-// then `node --test tests/browser/`. Needs Chrome (CHROME_PATH on Linux) and Node 22+.
+// then `node --test "tests/browser/*.test.mjs"`. Needs Chrome (CHROME_PATH on Linux) and Node 22+.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

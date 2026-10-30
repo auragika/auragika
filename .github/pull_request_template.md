@@ -8,7 +8,7 @@
 
 ## How tested
 
-- [ ] `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/` pass locally
+- [ ] `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"` pass locally
 - [ ] `run-ci` label added; `ci-passed` is green
 - [ ] Visual changes: screenshots checked at phone and desktop width, light and dark
 

@@ -25,7 +25,7 @@ Fill in the PR template: what changed, how you tested it, and the risk and rollb
 
 ## Before opening a PR
 
-- Run what CI runs: `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/` (Node 22+ and Chrome).
+- Run what CI runs: `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"` (Node 22+ and Chrome).
 - Visual changes:
   - Check at phone width (375 px) and desktop width, in light and dark.
   - Make sure there's no horizontal scroll and no console errors.

@@ -34,7 +34,7 @@ Guidance for Claude Code in this repo.
 Run what CI runs:
 
 ```bash
-hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/
+hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"
 ```
 
 The browser tests cover 375 px and 1280 px in dark and light (no overflow, every `.reveal` shown, no console errors or CSP violations), the 404 page and the theme toggle. They don't look at the page, so for visual changes also take screenshots (the `headless-chrome-verify` skill) and look at them.

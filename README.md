@@ -109,9 +109,9 @@ hugo server
 Open `http://localhost:1313`. `hugo server` doesn't apply `static/_headers`, so run the same checks as CI before a PR. They need Node 22+ and Chrome:
 
 ```bash
-hugo --minify --panicOnWarning   # production build; any warning fails
-node tools/check-build.mjs        # headers, no inline scripts, SRI and fingerprints
-node --test tests/browser/        # phone + desktop, dark + light, real CSP, 404, theme toggle
+hugo --minify --panicOnWarning           # production build; any warning fails
+node tools/check-build.mjs                # headers, no inline scripts, SRI and fingerprints
+node --test "tests/browser/*.test.mjs"    # phone + desktop, dark + light, real CSP, 404, theme toggle
 ```
 
 ---
