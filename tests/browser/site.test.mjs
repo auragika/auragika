@@ -69,7 +69,8 @@ for (const [size, width, height, mobile] of [['phone', 375, 812, true], ['deskto
     for (const theme of ['dark', 'light']) {
       await p.eval(`document.documentElement.dataset.theme = '${theme}'; scrollTo(0, 0); true`);
       await sleep(200);
-      assert.equal(await p.eval('document.documentElement.scrollWidth - innerWidth'), 0, `horizontal overflow in ${theme}`);
+      // clientWidth, not innerWidth: desktop Chrome on Linux draws a classic scrollbar inside innerWidth.
+      assert.equal(await p.eval('document.documentElement.scrollWidth - document.documentElement.clientWidth'), 0, `horizontal overflow in ${theme}`);
     }
     // Scroll through the page so the IntersectionObserver reveals everything.
     await p.eval(`(async () => { for (let y = 0; y <= document.body.scrollHeight; y += innerHeight / 2) { scrollTo(0, y); await new Promise(r => setTimeout(r, 80)); } })()`);
