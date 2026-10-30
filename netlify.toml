@@ -1,40 +1,8 @@
+# Netlify doesn't build from git: `ignore` exits 0, which skips every push and deploy
+# preview. Production deploys happen only from Actions → Deploy (.github/workflows/deploy.yml),
+# which builds the site and uploads it. Headers live in static/_headers so they apply to
+# those uploads; the Hugo version lives in the workflows.
 [build]
   publish = "public"
-  command = "hugo --minify --baseURL \"$URL\""
-
-[build.environment]
-  HUGO_VERSION = "0.163.3"
-
-# Fingerprinted by Hugo (content hash in the file name), so they can be cached forever.
-[[headers]]
-  for = "/css/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/js/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/images/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# The service worker must always be revalidated, or updates to it get stuck.
-[[headers]]
-  for = "/sw.js"
-  [headers.values]
-    Cache-Control = "no-cache"
-
-# Security headers for every page. The CSP allows no inline scripts (the theme pre-paint script is
-# an external file) and only Google Fonts as a third party. Inline style attributes stay allowed
-# for the per-element animation delays (style="--d:…"). A new external host needs an entry here.
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+  command = "hugo --minify"
+  ignore  = "exit 0"

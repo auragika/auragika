@@ -1,0 +1,154 @@
+# Production deploy, by hand: Actions → Deploy → Run workflow. Builds the chosen commit
+# (main by default) and uploads it to Netlify; Netlify doesn't build on push (netlify.toml).
+# Only commits that passed CI (`ci-passed`) can be deployed.
+#
+# Every deploy gets a build number (this workflow's run number), shown in:
+#   - the repo's Deployments list ("Build 12 · abc1234 · main", linking to the live site)
+#   - a `build-12` git tag on the deployed commit
+#   - the Netlify deploy title, the site's footer ("Build 12") and its auragika-build meta tag
+#   - this run's summary: commit, who, live and permalink URLs, timing, what's new
+# To roll back, run Deploy with an older build's tag, e.g. `build-11`.
+#
+# Secrets: NETLIFY_AUTH_TOKEN (Netlify → User settings → Applications → Personal access
+# tokens) and NETLIFY_SITE_ID (Site configuration → Site details → Site ID).
+name: Deploy
+run-name: Build ${{ github.run_number }} · ${{ inputs.ref }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag (e.g. build-11 to roll back) or commit SHA; must have passed CI
+        required: true
+        default: main
+
+permissions:
+  contents: write    # the build-N tag
+  deployments: write # the Deployments entry with the build number
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    env:
+      BUILD: ${{ github.run_number }}
+      REF: ${{ inputs.ref }}
+      GH_TOKEN: ${{ github.token }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0 # tags and history, for "what's new since the last build"
+
+      - name: Require ci-passed on this commit
+        run: |
+          sha=$(git rev-parse HEAD)
+          state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$sha/status" --jq '[.statuses[] | select(.context == "ci-passed")][0].state // "none"')
+          echo "Deploying $sha (ci-passed: $state)"
+          [ "$state" = success ] || { echo "::error::$sha has no successful ci-passed status; run CI on it first."; exit 1; }
+          {
+            echo "SHA=$sha"
+            echo "SHORT=${sha:0:7}"
+            echo "STARTED=$(date -u +%s)"
+            echo "PREV=$(git tag -l 'build-*' --sort=-v:refname | head -n1)"
+          } >> "$GITHUB_ENV"
+
+      # A GitHub deployment of our own (instead of `environment:`) so the Deployments
+      # list carries the build number and links to the live site.
+      - name: Open the deployment
+        run: |
+          id=$(jq -n --arg ref "$SHA" --arg d "Build $BUILD · $SHORT · $REF" \
+            '{ref: $ref, environment: "production", description: $d, auto_merge: false, required_contexts: [], production_environment: true}' \
+            | gh api "repos/$GITHUB_REPOSITORY/deployments" --input - --jq .id)
+          gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" -f state=in_progress -f log_url="$RUN_URL" -f description="Building $BUILD" --silent
+          echo "DEPLOYMENT_ID=$id" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - uses: peaceiris/actions-hugo@2752ce1d29631191ea3f27c23495fa06139a5b78 # v3.2.1
+        with:
+          hugo-version: '0.163.3' # same as ci.yml
+          extended: true
+
+      # HUGO_PARAMS_* become site.Params.*: the footer and a meta tag show the build.
+      - name: Build
+        run: |
+          hugo --minify --panicOnWarning
+          node tools/check-build.mjs
+        env:
+          HUGO_PARAMS_BUILD: ${{ github.run_number }}
+          HUGO_PARAMS_COMMIT: ${{ env.SHORT }}
+
+      - name: Upload to Netlify
+        id: netlify
+        run: scripts/deploy-netlify.sh
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          DEPLOY_TITLE: Build ${{ github.run_number }} · ${{ inputs.ref }} @ ${{ env.SHORT }}
+
+      - name: Tag the build
+        run: |
+          if git rev-parse -q --verify "refs/tags/build-$BUILD" >/dev/null; then
+            echo "build-$BUILD already exists"
+          else
+            git tag "build-$BUILD" "$SHA"
+            git push origin "build-$BUILD"
+          fi
+
+      - name: Mark the deployment live
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/deployments/$DEPLOYMENT_ID/statuses" -f state=success \
+            -f environment_url="$LIVE_URL" -f log_url="$RUN_URL" -f description="Live · build $BUILD · $SHORT" --silent
+        env:
+          LIVE_URL: ${{ steps.netlify.outputs.live_url }}
+
+      - name: Mark the deployment failed
+        if: failure() && env.DEPLOYMENT_ID != ''
+        run: gh api "repos/$GITHUB_REPOSITORY/deployments/$DEPLOYMENT_ID/statuses" -f state=failure -f log_url="$RUN_URL" -f description="Build $BUILD failed" --silent
+
+      - name: Summary
+        if: always() && env.SHA != ''
+        env:
+          OUTCOME: ${{ job.status }}
+          LIVE_URL: ${{ steps.netlify.outputs.live_url }}
+          PERMALINK: ${{ steps.netlify.outputs.permalink }}
+          NETLIFY_DEPLOY_ID: ${{ steps.netlify.outputs.deploy_id }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          secs=$(( $(date -u +%s) - STARTED ))
+          subject=$(git log -1 --format=%s "$SHA")
+          if [ "$OUTCOME" = success ]; then head="🚀 Build $BUILD is live"; else head="❌ Build $BUILD failed"; fi
+          {
+            echo "## $head"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| **Build** | \`build-$BUILD\` |"
+            echo "| **Commit** | [\`$SHORT\`]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$SHA) $subject |"
+            echo "| **Ref** | \`$REF\` |"
+            echo "| **Deployed by** | @$ACTOR |"
+            echo "| **Took** | $((secs / 60))m $((secs % 60))s |"
+            [ -n "$LIVE_URL" ] && echo "| **Live** | $LIVE_URL |"
+            [ -n "$PERMALINK" ] && echo "| **This build's permalink** | $PERMALINK |"
+            [ -n "$NETLIFY_DEPLOY_ID" ] && echo "| **Netlify deploy** | \`$NETLIFY_DEPLOY_ID\` |"
+            echo
+            if [ -n "$PREV" ] && [ "$(git rev-parse "$PREV^{commit}")" != "$SHA" ]; then
+              echo "### What's new since $PREV"
+              # shellcheck disable=SC2016 # the backticks are markdown, not a command
+              git log --format='- %s (`%h`)' "$PREV..$SHA" | head -n 50
+            elif [ -n "$PREV" ]; then
+              echo "Same commit as $PREV (a redeploy)."
+            else
+              echo "### What's in this build"
+              echo "First tagged build: earlier history is on [\`main\`]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commits/main)."
+            fi
+            echo
+            echo "Roll back: run **Deploy** with ref \`${PREV:-build-<n>}\`."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -55,10 +55,11 @@ The theme is toggled with the button in the app bar and stored in `localStorage`
 | Site generator | Hugo 0.163.3 | Data-driven sections, image processing, CSS/JS fingerprinting |
 | Styling | Auragika theme + plain CSS | No framework, no build step beyond Hugo |
 | Scripts | Two small vanilla JS files | `theme-init.js` (pre-paint) and `app.js` (toggle, reveal, spotlight, service worker) |
-| Deploy | Netlify | Builds on push; preview on every PR |
-| Security | Headers in `netlify.toml` | CSP with no inline scripts, Google Fonts as the only third party; SRI on our own CSS/JS |
+| CI | GitHub Actions | On demand (`run-ci` label): build with no warnings, build checks, headless Chrome with the real CSP |
+| Deploy | GitHub Actions → Netlify | Manual, numbered builds; Netlify doesn't build from git |
+| Security | Headers in `static/_headers` | CSP with no inline scripts, Google Fonts as the only third party; SRI on our own CSS/JS |
 
-**No npm, no bundler.** Hugo is the only build tool.
+**No npm, no bundler.** Hugo is the only build tool; the checks are zero-dependency Node scripts.
 
 ---
 
@@ -83,9 +84,15 @@ auragika/
 │   ├── home.html            ← The one-page site
 │   ├── 404.html
 │   └── _partials/           ← head, header, footer, section-head, app-card, person-card, icon
-├── static/                  ← favicon, app icons, manifest, service worker
+├── static/
+│   ├── _headers             ← Security (CSP) and cache headers, applied by Netlify
+│   └── …                    ← favicon, app icons, manifest, service worker
+├── tools/check-build.mjs    ← Checks public/: headers, no inline scripts, SRI, fingerprints
+├── tests/browser/           ← The build in headless Chrome with the real headers
+├── scripts/deploy-netlify.sh ← Uploads public/ to Netlify (run by the Deploy workflow)
+├── .github/workflows/       ← CI (run-ci label), Deploy (manual), PR title
 ├── hugo.toml
-├── netlify.toml             ← Build, Hugo version, cache and security headers
+├── netlify.toml             ← Tells Netlify not to build from git
 ├── CLAUDE.md                ← Notes for Claude Code
 └── CONTRIBUTING.md          ← Branches, commits, PRs, checks
 ```
@@ -93,28 +100,36 @@ auragika/
 
 ## Local Development
 
-Needs [Hugo](https://gohugo.io/installation/) 0.146 or later (Netlify builds with 0.163.3).
+Needs [Hugo](https://gohugo.io/installation/) 0.146 or later (CI and Deploy use 0.163.3, extended).
 
 ```bash
 hugo server
 ```
 
-Open `http://localhost:1313`. `hugo server` doesn't apply the headers in `netlify.toml`; the deploy preview does, so check CSP-sensitive changes there.
+Open `http://localhost:1313`. `hugo server` doesn't apply `static/_headers`, so run the same checks as CI before a PR. They need Node 22+ and Chrome:
+
+```bash
+hugo --minify --panicOnWarning           # production build; any warning fails
+node tools/check-build.mjs                # headers, no inline scripts, SRI and fingerprints
+node --test "tests/browser/*.test.mjs"    # phone + desktop, dark + light, real CSP, 404, theme toggle
+```
 
 ---
 
-## Deploy to Netlify
+## Deploy
 
-**1. Import the repo**: [app.netlify.com](https://app.netlify.com) → Add new site → Import from Git → select `auragika/auragika`.
+Netlify doesn't build from git (`netlify.toml` has `ignore = "exit 0"`). The same model as Pebble and QuizClash: **merging to `main` doesn't deploy.** A release is a deliberate, numbered build.
 
-**2. Build settings** (from `netlify.toml`):
+1. **Merge** PRs to `main`. Each push to `main` runs CI, which posts `ci-passed` on the commit.
+2. **Deploy:** GitHub → Actions → **Deploy** → Run workflow, with `main` (the default), a branch, a tag or a commit SHA. It refuses any commit without a green `ci-passed`.
+3. **Build number:** every deploy gets one (the workflow's run number). It appears in:
+   - the repo's **Deployments** list, as "Build 12 · abc1234 · main"
+   - a `build-12` git tag on the deployed commit
+   - the Netlify deploy title
+   - the site's footer and its `auragika-build` meta tag
+   - the run summary, which lists what's new since the previous build
+4. **Roll back:** run Deploy with an older tag, e.g. `build-11`.
 
-| Setting | Value |
-|---|---|
-| Build command | `hugo --minify --baseURL "$URL"` |
-| Publish directory | `public` |
-| Hugo version | `0.163.3` |
+**Setup (once):** the repo needs two Actions secrets, `NETLIFY_AUTH_TOKEN` (Netlify → User settings → Applications → Personal access tokens) and `NETLIFY_SITE_ID` (the site's Site configuration → Site details → Site ID).
 
-**3. Deploy**: every push to `main` triggers a redeploy, and every PR gets a deploy preview.
-
-Changes reach `main` only through pull requests (see [CONTRIBUTING.md](CONTRIBUTING.md)). The Netlify deploy preview must pass before a PR can merge.
+Changes reach `main` only through pull requests (see [CONTRIBUTING.md](CONTRIBUTING.md)), and a PR can merge only with a green `ci-passed`.

@@ -14,8 +14,8 @@ Every change to `main` goes through a pull request. The `main protection` rulese
 
 | Rule | What it means |
 |---|---|
-| Netlify deploy preview | The `netlify/auragika/deploy-preview` status must pass, i.e. the site builds. Open the preview and look at your change |
-| Up to date with `main` | Merge `main` into the branch ("Update branch" on GitHub) before merging |
+| `ci-passed` | Add the **`run-ci`** label to run CI on the PR's current head. The label removes itself, so add it again after new pushes. CI builds with no warnings, runs `tools/check-build.mjs` and the headless Chrome tests |
+| `pr-title` | The title follows Conventional Commits |
 | Conversations resolved | Reply to every comment, with a fix or a reason |
 | Squash merge only | The PR title becomes the commit on `main`; the branch is deleted after merging |
 
@@ -25,14 +25,14 @@ Fill in the PR template: what changed, how you tested it, and the risk and rollb
 
 ## Before opening a PR
 
-- `hugo --minify` builds with **no warnings**.
+- Run what CI runs: `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"` (Node 22+ and Chrome).
 - Visual changes:
   - Check at phone width (375 px) and desktop width, in light and dark.
   - Make sure there's no horizontal scroll and no console errors.
   - Follow the theme rules in the README.
-- A new third-party host needs a CSP entry in `netlify.toml`, and inline scripts aren't allowed.
+- A new third-party host needs a CSP entry in `static/_headers`, and inline scripts aren't allowed.
 - Don't edit `assets/css/auragika.css`; site styles go in `assets/css/app.css`.
 
 ## Deploying and rolling back
 
-Merging to `main` deploys automatically. To roll back, use Netlify → Deploys → pick an earlier deploy → **Publish deploy**, then revert the PR on GitHub.
+Merging to `main` **doesn't** deploy. To release, run Actions → **Deploy** (with `main`, or any ref with a green `ci-passed`). Each deploy gets a build number, a `build-N` tag and an entry in the repo's Deployments list. To roll back, run Deploy with an older tag such as `build-11`, then revert the PR on GitHub. See the README's Deploy section.
