@@ -8,10 +8,10 @@
 
 ## How tested
 
-- [ ] `hugo --minify` builds with no warnings
-- [ ] Deploy preview checked at phone and desktop width, light and dark (visual changes)
-- [ ] No console errors or CSP violations on the preview
+- [ ] `hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/` pass locally
+- [ ] `run-ci` label added; `ci-passed` is green
+- [ ] Visual changes: screenshots checked at phone and desktop width, light and dark
 
 ## Risk and rollback
 
-<!-- What could break, and how to undo it (revert, or republish an earlier Netlify deploy). -->
+<!-- What could break, and how to undo it (revert, or run Deploy with the previous `build-N` tag). -->
