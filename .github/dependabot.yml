@@ -1,0 +1,8 @@
+# Monthly, grouped update PRs for the pinned GitHub Actions. The site has no package manager:
+# Hugo's version is pinned in the workflows, and the Auragika theme is copied by hand.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    groups: { actions: { patterns: ["*"] } }

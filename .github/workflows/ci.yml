@@ -1,0 +1,98 @@
+# Quality gates. On a pull request they run on demand: add the `run-ci` label to test the
+# PR's current head (the label is removed straight away, so add it again after new pushes).
+# Every push to main runs them too. Nothing here deploys: production deploys are manual
+# (deploy.yml), and only for commits whose `ci-passed` is green.
+#
+# Locally: hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test tests/browser/
+#
+# Branch protection requires the `ci-passed` commit status, which only the `report` job
+# posts, and only when every check passed. A PR without a run (or after new pushes) has
+# no status for its head commit, so it can't merge. (A required *job* would not work:
+# a skipped job counts as passing.)
+name: CI
+
+on:
+  pull_request:
+    types: [labeled]
+    branches: [main]
+  push:
+    branches: [main]
+
+# Least privilege: jobs only read the repo unless they say otherwise.
+permissions:
+  contents: read
+
+# Re-adding the label cancels the run it supersedes. Other labels get their own group.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}-${{ github.event.label.name || 'push' }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '24'
+  HUGO_VERSION: '0.163.3' # same as deploy.yml
+
+jobs:
+  # Runs for pushes to main and for the `run-ci` label; removes the label so the next
+  # run is another deliberate click. Every other job depends on it.
+  gate:
+    name: gate
+    if: github.event_name == 'push' || github.event.label.name == 'run-ci'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - if: github.event_name == 'pull_request'
+        run: gh pr edit "$PR" --remove-label run-ci
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+
+  # One job on purpose: the site builds in seconds, and a second job would bill another
+  # minute just to rebuild it. Production build with no warnings, the build checks, then
+  # the build in headless Chrome with the real _headers (CSP enforced).
+  site:
+    name: site
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: peaceiris/actions-hugo@2752ce1d29631191ea3f27c23495fa06139a5b78 # v3.2.1
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+      - run: hugo --minify --panicOnWarning
+      - run: node tools/check-build.mjs
+      # Ubuntu 24.04 blocks the user namespaces Chrome's sandbox needs; allow them on
+      # this throwaway VM rather than running Chrome with --no-sandbox.
+      - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - run: node --test tests/browser/
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+
+  # Posts the `ci-passed` commit status (the one branch protection requires) on the
+  # commit that was tested: success only if every check succeeded.
+  report:
+    name: report
+    if: always() && needs.gate.result == 'success'
+    needs: [gate, site]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      statuses: write
+    steps:
+      - run: |
+          if [ "$ALL_OK" = true ]; then state=success; desc='All checks passed'; else state=failure; desc='Some checks failed'; fi
+          gh api "repos/$GITHUB_REPOSITORY/statuses/$SHA" -f state=$state -f context=ci-passed -f description="$desc" -f target_url="$RUN_URL" --silent
+          [ "$state" = success ]
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ALL_OK: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
