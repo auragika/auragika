@@ -14,9 +14,8 @@
   icon: pebble
   desc: Track expenses, plan budgets and see where shared and personal money goes.
 - name: Cadence
-  url: https://auragikaroutine.netlify.app
+  url: https://cadence.auragika.com
   icon: check
-  beta: true
   desc: Daily routines, habits and to-dos, designed for two and kept in sync.
 - name: Ripple
   url: https://auragikaripple.netlify.app
