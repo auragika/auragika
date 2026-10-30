@@ -98,6 +98,14 @@ main:focus { outline: none; }
 .app-card:hover .app-go { background: var(--accent); color: var(--accent-ink); transform: rotate(45deg); }
 .is-featured .app-card { background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), var(--surface) 60%); }
 .app-users { justify-self: start; margin-top: 4px; }
+/* Beta: not a link, so no hover lift or spotlight; the banner replaces the footer. */
+.app-card.is-beta { border: 1px dashed var(--line-2); }
+.app-card.is-beta:hover { transform: none; border-color: var(--line-2); box-shadow: none; }
+.app-card.is-beta::before { display: none; }
+.is-beta .app-icon { background: var(--surface-2); color: var(--text-3); }
+.is-beta .app-name { color: var(--text-2); }
+.app-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); }
+.app-soon { font-size: .85rem; font-weight: 600; color: var(--text-3); }
 .app-mark { display: none; }
 @media (min-width: 960px) {
   .is-featured .app-card { padding: 32px; }

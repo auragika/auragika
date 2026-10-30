@@ -1,29 +1,35 @@
 # Apps shown in the "Apps we built" grid, in display order.
 # icon: a key from layouts/_partials/icon.html. featured: a 2×2 block on wide screens (one featured + five fills 3×3).
 # users (optional): a rounded count such as "300+", shown as a "Live with 300+ users" pill. Keep it honest and current.
+# beta (optional): still in testing. The card isn't a link, hides its description and shows an "In beta · Coming soon"
+#   banner; it isn't counted as live. Keep live apps first so they sit next to the featured one.
 - name: QuizClash
   url: https://quizclash.auragika.com
   icon: bolt
   featured: true
   users: 300+
   desc: Real-time quiz battles with friends. Go one-on-one or fill a room of up to eight, and watch the answers land live.
-- name: Routine
-  url: https://auragikaroutine.netlify.app
-  icon: check
-  desc: Daily routines, habits and to-dos, designed for two and kept in sync.
-- name: Ripple
-  url: https://auragikaripple.netlify.app
-  icon: target
-  desc: Break life goals into steps and watch the goal bubble fill, earning coins as you go.
-- name: Grove
-  url: https://auragikagrove.netlify.app
-  icon: leaf
-  desc: A calm wellness companion for habits and mood, built to grow together.
 - name: Pebble
   url: https://pebble.auragika.com
   icon: wallet
   desc: Track expenses, plan budgets and see where shared and personal money goes.
+- name: Routine
+  url: https://auragikaroutine.netlify.app
+  icon: check
+  beta: true
+  desc: Daily routines, habits and to-dos, designed for two and kept in sync.
+- name: Ripple
+  url: https://auragikaripple.netlify.app
+  icon: target
+  beta: true
+  desc: Break life goals into steps and watch the goal bubble fill, earning coins as you go.
+- name: Grove
+  url: https://auragikagrove.netlify.app
+  icon: leaf
+  beta: true
+  desc: A calm wellness companion for habits and mood, built to grow together.
 - name: Health
   url: https://auragika-health-tracker.netlify.app
   icon: heart
+  beta: true
   desc: Log your weight every day and keep notes and reflections alongside it.

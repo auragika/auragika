@@ -1,6 +1,16 @@
-{{- /* One app in the grid. Takes a dict: app (an entry of data/apps.yaml) and i (its index, for the reveal stagger). */ -}}
+{{- /* One app in the grid. Takes a dict: app (an entry of data/apps.yaml) and i (its index, for the reveal stagger).
+     A beta app renders as a plain card: no link, no description, and an "In beta · Coming soon" banner. */ -}}
 {{- $app := .app -}}
 <li class="reveal{{ if $app.featured }} is-featured{{ end }}" style="--d:{{ mul .i 60 }}ms">
+  {{- if $app.beta }}
+  <div class="card app-card is-beta">
+    <span class="app-icon">{{ partial "icon.html" $app.icon }}</span>
+    <span class="app-body">
+      <span class="h3 app-name">{{ $app.name }}</span>
+    </span>
+    <span class="app-banner"><span class="pill pill-accent">In beta</span><span class="app-soon">Coming soon</span></span>
+  </div>
+  {{- else }}
   <a class="card app-card" href="{{ $app.url }}" target="_blank" rel="noopener">
     <span class="app-icon">{{ partial "icon.html" $app.icon }}</span>
     <span class="app-body">
@@ -19,4 +29,5 @@
     {{- end }}
     <span class="sr-only">(opens in a new tab)</span>
   </a>
+  {{- end }}
 </li>
