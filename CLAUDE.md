@@ -25,6 +25,10 @@ Guidance for Claude Code in this repo.
 - A new third-party host (fonts, analytics, CDN) needs a CSP entry in the same PR.
 - `hugo server` doesn't send these headers; `tests/browser` serves the build with them. `tools/check-build.mjs` enforces the rules above, so extend it when you add one.
 
+## Add to home screen
+
+The site installs as an app: `static/manifest.json` + icons, the service worker, and the iOS `apple-mobile-web-app-*` tags in `head.html`. The hero's install strip is the theme's `.install-hint`: `app.js` shows one-tap Install on `beforeinstallprompt` (Chrome, Edge, Android) or Share → Add to Home Screen on iPhone/iPad Safari, and hides it when installed or for 30 days after it's dismissed (`au_install_hint`).
+
 ## Service worker
 
 `static/sw.js`: network first for pages and un-fingerprinted files, cache first for fingerprinted `/css/`, `/js/`, `/images/`, cross-origin untouched. Bump `CACHE` when its rules change.
