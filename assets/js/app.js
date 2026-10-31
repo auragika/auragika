@@ -1,4 +1,4 @@
-/* Auragika: theme toggle, scroll reveal, card spotlight, service worker. */
+/* Auragika: theme toggle, scroll reveal, card spotlight, install strip, service worker. */
 (function () {
   'use strict';
 
@@ -58,6 +58,72 @@
     });
   }
 
+  // Add to home screen. Chrome, Edge and Android fire beforeinstallprompt: offer one-tap Install in place of
+  // the browser's mini-infobar. iPhone/iPad Safari has no prompt, so show Share → Add to Home Screen.
+  // Hidden when already installed, and for 30 days after it's dismissed or the prompt is declined.
+  var INSTALL_KEY = 'au_install_hint';
+  var INSTALL_SNOOZE_MS = 30 * 24 * 3600 * 1000;
+  var installEvt = null;
+
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  }
+
+  function isIosSafari() {
+    var ua = navigator.userAgent;
+    var ios = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    // iPadOS reports as a Mac with touch; Safari's UA never names Chrome, so touch-emulating Chrome doesn't match.
+    return ios && /safari/i.test(ua) && !/chrome|chromium|crios|fxios|edgios|opios/i.test(ua);
+  }
+
+  function installSnoozed() {
+    try { return Date.now() - Number(localStorage.getItem(INSTALL_KEY) || 0) < INSTALL_SNOOZE_MS; }
+    catch (e) { return false; }
+  }
+
+  function snoozeInstall() {
+    try { localStorage.setItem(INSTALL_KEY, String(Date.now())); } catch (e) { console.error('[Auragika] install', e); }
+  }
+
+  function initInstall() {
+    var strip = document.getElementById('install');
+    if (!strip) return;
+    var btn = document.getElementById('install-btn');
+    var ios = document.getElementById('install-ios');
+
+    function paint() {
+      var mode = isStandalone() || installSnoozed() ? null : installEvt ? 'prompt' : isIosSafari() ? 'ios' : null;
+      strip.hidden = !mode;
+      btn.hidden = mode !== 'prompt';
+      ios.hidden = mode !== 'ios';
+    }
+
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      installEvt = e;
+      paint();
+    });
+    window.addEventListener('appinstalled', function () {
+      installEvt = null;
+      paint();
+    });
+    btn.addEventListener('click', function () {
+      var e = installEvt;
+      if (!e) return;
+      installEvt = null;
+      e.prompt();
+      Promise.resolve(e.userChoice).then(function (choice) {
+        if (!choice || choice.outcome !== 'accepted') snoozeInstall();
+      }).catch(function (err) { console.error('[Auragika] install', err); }).then(paint);
+      paint();
+    });
+    document.getElementById('install-x').addEventListener('click', function () {
+      snoozeInstall();
+      paint();
+    });
+    paint();
+  }
+
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     window.addEventListener('load', function () {
@@ -68,5 +134,6 @@
   initTheme();
   initReveal();
   initSpotlight();
+  initInstall();
   registerServiceWorker();
 })();

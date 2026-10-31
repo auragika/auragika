@@ -54,7 +54,7 @@ The theme is toggled with the button in the app bar and stored in `localStorage`
 |---|---|---|
 | Site generator | Hugo 0.163.3 | Data-driven sections, image processing, CSS/JS fingerprinting |
 | Styling | Auragika theme + plain CSS | No framework, no build step beyond Hugo |
-| Scripts | Two small vanilla JS files | `theme-init.js` (pre-paint) and `app.js` (toggle, reveal, spotlight, service worker) |
+| Scripts | Two small vanilla JS files | `theme-init.js` (pre-paint) and `app.js` (toggle, reveal, spotlight, install strip, service worker) |
 | CI | GitHub Actions | On demand (`run-ci` label): build with no warnings, build checks, headless Chrome with the real CSP |
 | Deploy | GitHub Actions → Netlify | Manual, numbered builds; Netlify doesn't build from git |
 | Security | Headers in `static/_headers` | CSP with no inline scripts, Google Fonts as the only third party; SRI on our own CSS/JS |
@@ -74,7 +74,7 @@ auragika/
 │   ├── images/              ← Profile photos (resized by Hugo)
 │   └── js/
 │       ├── theme-init.js    ← Applies the saved theme before first paint
-│       └── app.js           ← Theme toggle, reveal, spotlight, service worker
+│       └── app.js           ← Theme toggle, reveal, spotlight, install strip, service worker
 ├── data/
 │   ├── apps.yaml            ← The apps grid
 │   ├── soon.yaml            ← "What we're making next"

@@ -103,3 +103,29 @@ test('theme toggle persists across a reload', async () => {
   assert.deepEqual(problems(p), [], 'console errors');
   await p.close();
 });
+
+// Chrome fires beforeinstallprompt once the page is installable (manifest, icons, service worker), and
+// headless Chrome may too, so the test dispatches its own stand-in with prompt() and userChoice.
+test('install strip: offers Install on beforeinstallprompt, calls prompt(), stays hidden once declined', async () => {
+  const p = await open('install', 375, 812, true);
+  await p.eval(`localStorage.removeItem('au_install_hint'); window.__prompted = 0;
+    const e = new Event('beforeinstallprompt', { cancelable: true });
+    e.prompt = () => { window.__prompted++; };
+    e.userChoice = Promise.resolve({ outcome: 'dismissed' });
+    dispatchEvent(e); true`);
+  assert.equal(await p.eval("document.getElementById('install').hidden"), false, 'strip not shown after beforeinstallprompt');
+  assert.equal(await p.eval("document.getElementById('install-btn').hidden"), false, 'no Install button');
+  assert.equal(await p.eval("document.getElementById('install-ios').hidden"), true, 'iOS steps shown in Chrome');
+  assert.equal(await p.eval('document.documentElement.scrollWidth - document.documentElement.clientWidth'), 0, 'horizontal overflow with the strip');
+  await p.eval("document.getElementById('install-btn').click(); true");
+  await p.waitFor("document.getElementById('install').hidden && !!localStorage.getItem('au_install_hint')", 3000);
+  assert.equal(await p.eval('window.__prompted'), 1, 'prompt() not called');
+  // Declined, so it's snoozed: a prompt after a reload doesn't bring it back.
+  await p.goto(origin + '/');
+  await p.waitFor("document.readyState === 'complete'");
+  await p.eval("const e = new Event('beforeinstallprompt'); e.prompt = () => {}; dispatchEvent(e); true");
+  assert.equal(await p.eval("document.getElementById('install').hidden"), true, 'strip back after it was declined');
+  assert.deepEqual(await p.eval('window.__csp'), [], 'CSP violations');
+  assert.deepEqual(problems(p), [], 'console errors');
+  await p.close();
+});

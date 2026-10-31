@@ -13,6 +13,14 @@
         <a class="btn btn-primary btn-lg" href="#apps">Explore the apps {{ partial "icon.html" "down" }}</a>
         <a class="btn btn-secondary btn-lg" href="#us">Meet us</a>
       </div>
+      {{- /* Shown by app.js: one-tap Install where the browser offers it, Share → Add to Home Screen on iPhone and iPad. */}}
+      <div id="install" class="install-hint" role="note" hidden>
+        <span class="install-ic">{{ partial "icon.html" "install" }}</span>
+        <p class="install-text"><strong>Keep Auragika on your home screen.</strong> <span class="muted">It opens like an app, even offline.</span></p>
+        <button id="install-btn" class="btn btn-secondary btn-sm" type="button" hidden>Install</button>
+        <span id="install-ios" class="install-how" hidden>Tap <strong>Share</strong> {{ partial "icon.html" "share" }} then <strong>Add to Home Screen</strong></span>
+        <button id="install-x" class="icon-btn icon-btn-sm install-x" type="button" aria-label="Hide this tip">{{ partial "icon.html" "x" }}</button>
+      </div>
     </div>
   </section>
 
