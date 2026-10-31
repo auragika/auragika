@@ -1,6 +1,10 @@
+{{- /* The version comes from hugo.toml; the build number and commit are set by the Deploy workflow (HUGO_PARAMS_BUILD / _COMMIT). */ -}}
 <footer class="footer">
   <div class="page footer-inner">
-    <span class="brand brand-sm"><span class="brand-mark">{{ partial "icon.html" "spark" }}</span>Auragika</span>
-    <span class="fine">© <span class="mono">{{ now.Year }}</span> Auragika. All rights reserved. · Made by Ruchika &amp; Anurag{{ with site.Params.build }} · <span class="mono">Build {{ . }}</span>{{ end }}</span>
+    <span class="footer-id">
+      <span class="brand brand-sm"><span class="brand-mark">{{ partial "icon.html" "spark" }}</span>Auragika</span>
+      <span class="pill pill-muted mono footer-build"{{ with site.Params.commit }} title="Commit {{ . }}"{{ end }}>v{{ site.Params.version }} · {{ with site.Params.build }}Build {{ . }}{{ else }}local{{ end }}</span>
+    </span>
+    <span class="fine">© <span class="mono">{{ now.Year }}</span> Auragika. All rights reserved. · Made by Ruchika &amp; Anurag</span>
   </div>
 </footer>
