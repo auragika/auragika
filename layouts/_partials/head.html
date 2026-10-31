@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0a0b10">
 <link rel="canonical" href="{{ .Permalink }}">
 {{- /* Which build is live: set by the Deploy workflow (HUGO_PARAMS_BUILD / _COMMIT). */}}
-<meta name="auragika-build" content="{{ with site.Params.build }}{{ . }}{{ with site.Params.commit }} {{ . }}{{ end }}{{ else }}local{{ end }}">
+<meta name="auragika-build" content="v{{ site.Params.version }} {{ with site.Params.build }}{{ . }}{{ with site.Params.commit }} {{ . }}{{ end }}{{ else }}local{{ end }}">
 
 {{- /* Blocking on purpose: sets data-theme before first paint. External so the CSP can forbid inline scripts. */}}
 {{- with resources.Get "js/theme-init.js" | minify | fingerprint }}

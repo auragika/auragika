@@ -126,7 +126,7 @@ Netlify doesn't build from git (`netlify.toml` has `ignore = "exit 0"`). The sam
    - the repo's **Deployments** list, as "Build 12 · abc1234 · main"
    - a `build-12` git tag on the deployed commit
    - the Netlify deploy title
-   - the site's footer and its `auragika-build` meta tag
+   - the site's footer, as a "v1.0.0 · Build 12" pill (the version is `params.version` in `hugo.toml`; bump it for notable releases), and its `auragika-build` meta tag
    - the run summary, which lists what's new since the previous build
 4. **Roll back:** run Deploy with an older tag, e.g. `build-11`.
 

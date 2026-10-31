@@ -141,6 +141,8 @@ main:focus { outline: none; }
 .footer { margin-top: clamp(64px, 10vh, 112px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
 .footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 22px; padding-bottom: 28px; }
 .footer .fine { margin: 0; }
+.footer-id { display: inline-flex; align-items: center; gap: 12px; }
+.footer-build { height: 24px; font-size: .72rem; font-weight: 600; letter-spacing: 0; }
 .brand-sm { font-size: .95rem; gap: 8px; }
 .brand-sm .brand-mark { width: 24px; height: 24px; border-radius: 8px; }
 .brand-sm .brand-mark svg { width: 13px; height: 13px; }

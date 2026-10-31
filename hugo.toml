@@ -7,4 +7,6 @@ disableKinds = ["page", "section", "taxonomy", "term", "rss"]
 enableRobotsTXT = true
 
 [params]
+  # Shown in the footer next to the build number. Bump it for notable releases (semver).
+  version = "1.0.0"
   description = "Ruchika & Anurag: the apps we build, the places we go and what we cook."

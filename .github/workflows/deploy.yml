@@ -5,7 +5,7 @@
 # Every deploy gets a build number (this workflow's run number), shown in:
 #   - the repo's Deployments list ("Build 12 · abc1234 · main", linking to the live site)
 #   - a `build-12` git tag on the deployed commit
-#   - the Netlify deploy title, the site's footer ("Build 12") and its auragika-build meta tag
+#   - the Netlify deploy title, the site's footer ("v1.0.0 · Build 12") and its auragika-build meta tag
 #   - this run's summary: commit, who, live and permalink URLs, timing, what's new
 # To roll back, run Deploy with an older build's tag, e.g. `build-11`.
 #
