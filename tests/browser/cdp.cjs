@@ -9,9 +9,22 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 async function launch(port, profileDir) {
   fs.rmSync(profileDir, { recursive: true, force: true });
   const proc = spawn(CHROME, ['--headless=new', '--remote-debugging-port=' + port, '--user-data-dir=' + profileDir,
-    '--no-first-run', '--autoplay-policy=no-user-gesture-required', '--no-default-browser-check', '--window-size=1280,900', 'about:blank'], { stdio: 'ignore' });
+    '--no-first-run', '--autoplay-policy=no-user-gesture-required', '--no-default-browser-check', '--window-size=1280,900', 'about:blank'], { stdio: ['ignore', 'ignore', 'pipe'] });
+  // A cold CI runner can take well over 10 s to start Chrome. If it exits or never answers, kill it and say why:
+  // a Chrome left running keeps Node (and the CI job) alive until the job's timeout.
+  let stderr = '', exited = null;
+  proc.stderr.on('data', d => { stderr = (stderr + d).slice(-2000); });
+  proc.on('exit', code => { exited = code; });
+  proc.on('error', e => { exited = e.code; stderr += e.message; });
   let ver;
-  for (let i = 0; i < 50; i++) { try { ver = await (await fetch(`http://127.0.0.1:${port}/json/version`)).json(); break; } catch { await sleep(200); } }
+  for (const t0 = Date.now(); !ver && exited === null && Date.now() - t0 < 30000;) {
+    try { ver = await (await fetch(`http://127.0.0.1:${port}/json/version`)).json(); } catch { await sleep(200); }
+  }
+  if (!ver) {
+    proc.kill('SIGKILL');
+    throw new Error(`Chrome didn't start (${exited === null ? 'no answer in 30 s' : 'exited with ' + exited}) at ${CHROME}\n${stderr}`);
+  }
+  proc.stderr.removeAllListeners('data').resume();
   const ws = new WebSocket(ver.webSocketDebuggerUrl);
   await new Promise(r => ws.addEventListener('open', r));
   let id = 0; const pending = new Map(); const handlers = [];
