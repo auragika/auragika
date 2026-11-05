@@ -17,16 +17,15 @@
   url: https://cadence.auragika.com
   icon: check
   desc: Daily routines, habits and to-dos, designed for two and kept in sync.
+- name: Grove
+  url: https://grove.auragika.com
+  icon: leaf
+  desc: A calm wellness companion for habits and mood, built to grow together.
 - name: Ripple
   url: https://auragikaripple.netlify.app
   icon: target
   beta: true
   desc: Break life goals into steps and watch the goal bubble fill, earning coins as you go.
-- name: Grove
-  url: https://auragikagrove.netlify.app
-  icon: leaf
-  beta: true
-  desc: A calm wellness companion for habits and mood, built to grow together.
 - name: Ember
   url: https://auragika-health-tracker.netlify.app
   icon: flame
