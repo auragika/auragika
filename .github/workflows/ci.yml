@@ -69,10 +69,12 @@ jobs:
           extended: true
       - run: hugo --minify --panicOnWarning
       - run: node tools/check-build.mjs
-      # Ubuntu 24.04 blocks the user namespaces Chrome's sandbox needs; allow them on
-      # this throwaway VM rather than running Chrome with --no-sandbox.
+      # Ubuntu 24.04 and later block the user namespaces Chrome's sandbox needs; allow them
+      # on this throwaway VM rather than running Chrome with --no-sandbox.
       - run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      # The tests take about 20 s; the cap makes a hung Chrome fail in minutes, not at the job timeout.
       - run: node --test "tests/browser/*.test.mjs"
+        timeout-minutes: 4
         env:
           CHROME_PATH: /usr/bin/google-chrome
 
