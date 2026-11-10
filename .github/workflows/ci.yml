@@ -1,7 +1,7 @@
 # Quality gates. On a pull request they run on demand: add the `run-ci` label to test the
 # PR's current head (the label is removed straight away, so add it again after new pushes).
-# Every push to main runs them too. Nothing here deploys: production deploys are manual
-# (deploy.yml), and only for commits whose `ci-passed` is green.
+# Every push to main runs them too, then publishes a GitHub Release with the built site
+# (deploying it is a manual step: .github/workflows/deploy.yml).
 #
 # Locally: hugo --minify --panicOnWarning && node tools/check-build.mjs && node --test "tests/browser/*.test.mjs"
 #
@@ -29,7 +29,7 @@ concurrency:
 
 env:
   NODE_VERSION: '24'
-  HUGO_VERSION: '0.163.3' # same as deploy.yml
+  HUGO_VERSION: '0.163.3'
 
 jobs:
   # Runs for pushes to main and for the `run-ci` label; removes the label so the next
@@ -98,3 +98,45 @@ jobs:
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           ALL_OK: ${{ !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && !contains(needs.*.result, 'skipped') }}
+
+  # Release: only for pushes to main, only after the checks above passed. Builds the site once
+  # and publishes it as a GitHub Release (tag vYYYY.MM.DD-<run>, notes = merged PRs, asset
+  # site.zip). Nothing is deployed here: run the Deploy workflow to ship a release, so what goes
+  # live is exactly what was built and checked here.
+  release:
+    name: release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [site]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # create the tag and the release
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: peaceiris/actions-hugo@2752ce1d29631191ea3f27c23495fa06139a5b78 # v3.2.1
+        with:
+          hugo-version: ${{ env.HUGO_VERSION }}
+          extended: true
+      - name: Name the release
+        env:
+          RUN: ${{ github.run_number }}
+        run: echo "TAG=v$(date -u +%Y.%m.%d)-$RUN" >> "$GITHUB_ENV"
+      # HUGO_PARAMS_* become site.Params.*: the footer pill and the auragika-build meta tag show
+      # the release and commit (scripts/live-release.sh reads the meta tag back).
+      - name: Build
+        run: |
+          hugo --minify --panicOnWarning
+          node tools/check-build.mjs
+        env:
+          HUGO_PARAMS_RELEASE: ${{ env.TAG }}
+          HUGO_PARAMS_COMMIT: ${{ github.sha }}
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          (cd public && zip -qr ../site.zip .)
+          gh release create "$TAG" site.zip --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+          echo "Released [$TAG]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$TAG). Deploy it: Actions → Deploy → Run workflow." >> "$GITHUB_STEP_SUMMARY"

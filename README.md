@@ -56,7 +56,7 @@ The theme is toggled with the button in the app bar and stored in `localStorage`
 | Styling | Auragika theme + plain CSS | No framework, no build step beyond Hugo |
 | Scripts | Two small vanilla JS files | `theme-init.js` (pre-paint) and `app.js` (toggle, reveal, spotlight, install strip, service worker) |
 | CI | GitHub Actions | On demand (`run-ci` label): build with no warnings, build checks, headless Chrome with the real CSP |
-| Deploy | GitHub Actions → Netlify | Manual, numbered builds; Netlify doesn't build from git |
+| Deploy | GitHub Releases → Netlify | CI publishes a release per `main`; Deploy and Rollback are manual; Netlify doesn't build from git |
 | Security | Headers in `static/_headers` | CSP with no inline scripts, Google Fonts as the only third party; SRI on our own CSS/JS |
 
 **No npm, no bundler.** Hugo is the only build tool; the checks are zero-dependency Node scripts.
@@ -89,8 +89,8 @@ auragika/
 │   └── …                    ← favicon, app icons, manifest, service worker
 ├── tools/check-build.mjs    ← Checks public/: headers, no inline scripts, SRI, fingerprints
 ├── tests/browser/           ← The build in headless Chrome with the real headers
-├── scripts/deploy-netlify.sh ← Uploads public/ to Netlify (run by the Deploy workflow)
-├── .github/workflows/       ← CI (run-ci label), Deploy (manual), PR title
+├── scripts/                 ← Deploy helpers: Netlify upload, live and previous release, summary
+├── .github/workflows/       ← CI (run-ci label; releases on main), Deploy and Rollback (manual), PR title
 ├── hugo.toml
 ├── netlify.toml             ← Tells Netlify not to build from git
 ├── CLAUDE.md                ← Notes for Claude Code
@@ -118,17 +118,21 @@ node --test "tests/browser/*.test.mjs"    # phone + desktop, dark + light, real 
 
 ## Deploy
 
-Netlify doesn't build from git (`netlify.toml` has `ignore = "exit 0"`). The same model as Pebble and QuizClash: **merging to `main` doesn't deploy.** A release is a deliberate, numbered build.
+Netlify doesn't build from git (`netlify.toml` has `ignore = "exit 0"`). The same model as QuizClash: **merging to `main` doesn't deploy.** CI builds each `main` once into a release, and a deploy ships a release as it is.
 
-1. **Merge** PRs to `main`. Each push to `main` runs CI, which posts `ci-passed` on the commit.
-2. **Deploy:** GitHub → Actions → **Deploy** → Run workflow, with `main` (the default), a branch, a tag or a commit SHA. It refuses any commit without a green `ci-passed`.
-3. **Build number:** every deploy gets one (the workflow's run number). It appears in:
-   - the repo's **Deployments** list, as "Build 12 · abc1234 · main"
-   - a `build-12` git tag on the deployed commit
-   - the Netlify deploy title
-   - the site's footer, as a "v1.0.0 · Build 12" pill (the version is `params.version` in `hugo.toml`; bump it for notable releases), and its `auragika-build` meta tag
-   - the run summary, which lists what's new since the previous build
-4. **Roll back:** run Deploy with an older tag, e.g. `build-11`.
+1. **Merge** PRs to `main`. Each push to `main` runs CI. When every check passes, the `release` job builds the site once and publishes a **GitHub Release**:
+   - tag `vYYYY.MM.DD-N` (UTC date and CI run number, e.g. `v2026.11.11-31`)
+   - notes listing the merged PRs
+   - asset `site.zip`, the exact build that was checked
+2. **Deploy:** GitHub → Actions → **Deploy** → Run workflow. Leave the tag empty for the latest release, or enter one. It uploads that release's `site.zip` to Netlify unchanged, so what goes live is exactly what CI built and tested.
+3. **Where a release shows:**
+   - the site's footer, as a pill (hover it for the commit), and its `auragika-build` meta tag
+   - the Netlify deploy title, e.g. "v2026.11.11-31 (update, by …)"
+   - the repo's **Deployments** list (environment `production`)
+   - the run summary: the release, commit, what was live, who deployed, how long it took, the live URL and this deploy's permalink, and **what's new** since the release that was live (or, on a rollback, what's no longer live)
+4. **Roll back:** Actions → **Rollback** → Run workflow. It redeploys the release that was **actually live** before the current one, found in Netlify's deploy history (most releases never reach production). Run it again to step further back. To go to a specific release, run Deploy with its tag.
+
+Deploys from before releases carry `build-N` tags; those have no `site.zip`, so they can't be redeployed.
 
 **Setup (once):** the repo needs two Actions secrets, `NETLIFY_AUTH_TOKEN` (Netlify → User settings → Applications → Personal access tokens) and `NETLIFY_SITE_ID` (the site's Site configuration → Site details → Site ID).
 

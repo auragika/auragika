@@ -6,8 +6,9 @@ Guidance for Claude Code in this repo.
 
 ## Shape
 
-- **Stack:** Hugo 0.146+ layout (`layouts/baseof.html`, `home.html`, `404.html`, `_partials/`), plain CSS, two small vanilla JS files. No npm, no bundler; Hugo is the only build tool. Hugo is pinned in `.github/workflows/ci.yml` and `deploy.yml` (keep them equal).
-- **Deploy:** manual and numbered, like Pebble. Actions → Deploy builds a ref with a green `ci-passed` and uploads it to Netlify; Netlify never builds from git. Merging doesn't deploy. Never run Deploy unless the user asks.
+- **Stack:** Hugo 0.146+ layout (`layouts/baseof.html`, `home.html`, `404.html`, `_partials/`), plain CSS, two small vanilla JS files. No npm, no bundler; Hugo is the only build tool. Hugo is pinned in `.github/workflows/ci.yml` (Deploy doesn't build).
+- **Releases and deploys:** like QuizClash. Each green push to `main` becomes a GitHub Release (`vYYYY.MM.DD-N`, `site.zip`, built once in CI's `release` job). Actions → Deploy ships a release unchanged to Netlify (empty tag = latest); Actions → Rollback ships the one that was live before. Netlify never builds from git, and merging doesn't deploy. Never run Deploy or Rollback unless the user asks.
+- **Live release:** `<meta name="auragika-build" content="<release> <commit>">`. `scripts/live-release.sh` reads it back, so keep the release first.
 - **One page:** `home.html` composes partials; content comes from `data/apps.yaml`, `data/soon.yaml` and `data/people.yaml`. Change content in the YAML, not the templates.
 - **Assets:** CSS (`auragika.css` + `app.css`) and JS go through `minify | fingerprint` with SRI. The `immutable` cache headers and the service worker's cache-first rule depend on that hash, so never link an asset under `/css/`, `/js/` or `/images/` without fingerprinting it.
 

@@ -35,4 +35,4 @@ Fill in the PR template: what changed, how you tested it, and the risk and rollb
 
 ## Deploying and rolling back
 
-Merging to `main` **doesn't** deploy. To release, run Actions → **Deploy** (with `main`, or any ref with a green `ci-passed`). Each deploy gets a build number, a `build-N` tag and an entry in the repo's Deployments list. To roll back, run Deploy with an older tag such as `build-11`, then revert the PR on GitHub. See the README's Deploy section.
+Merging to `main` **doesn't** deploy. Each green `main` becomes a GitHub Release (`vYYYY.MM.DD-N`, with the built `site.zip`). To ship, run Actions → **Deploy** (empty tag = the latest release). To undo, run Actions → **Rollback**, which goes back to the release that was live before, then revert the PR on GitHub. See the README's Deploy section.
