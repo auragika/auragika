@@ -14,4 +14,4 @@
 
 ## Risk and rollback
 
-<!-- What could break, and how to undo it (revert, or run Deploy with the previous `build-N` tag). -->
+<!-- What could break, and how to undo it (revert, or Actions → Rollback after it's deployed). -->

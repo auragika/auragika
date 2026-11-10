@@ -1,0 +1,41 @@
+# Production rollback, by hand: Actions → Rollback → Run workflow. Redeploys the release that was
+# live before the current one, through the Deploy workflow.
+# "Before" comes from Netlify's deploy history (scripts/previous-release.sh): each deploy is
+# titled with its release, so it is what was actually live, not merely the previous release
+# (most never reach production). Run it again to step further back.
+# To go to a specific release instead, run Deploy with that tag.
+name: Rollback
+run-name: Rollback by ${{ github.actor }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pick:
+    name: pick the previous release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tag: ${{ steps.pick.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: scripts
+      - id: pick
+        run: scripts/previous-release.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  deploy:
+    needs: pick
+    permissions:
+      contents: read
+    uses: ./.github/workflows/deploy.yml
+    with:
+      tag: ${{ needs.pick.outputs.tag }}
+    secrets: inherit
