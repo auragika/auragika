@@ -68,12 +68,15 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      # Release, commit, what was live, how long it took, the live and permalink URLs, and the
-      # merged PRs since the previous live release (or those taken away, on a rollback).
+      # 🚀/⏪/🔁/❌ heading; release, commit, what was live, who, how long, the live and permalink
+      # URLs; then the merged PRs since the live release (or those taken away, on a rollback) and
+      # how to undo. Also written when the deploy failed.
       - name: Summarise the deploy
+        if: always() && env.TAG != ''
         run: scripts/deploy-summary.sh >> "$GITHUB_STEP_SUMMARY"
         env:
           GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ job.status }}
           LIVE_URL: ${{ steps.netlify.outputs.live_url }}
           PERMALINK: ${{ steps.netlify.outputs.permalink }}
           DEPLOY_ID: ${{ steps.netlify.outputs.deploy_id }}
