@@ -73,7 +73,13 @@ jobs:
       # how to undo. Also written when the deploy failed.
       - name: Summarise the deploy
         if: always() && env.TAG != ''
-        run: scripts/deploy-summary.sh >> "$GITHUB_STEP_SUMMARY"
+        # If the run stopped before the scripts were checked out, still say it didn't go live.
+        run: |
+          if [ -x scripts/deploy-summary.sh ]; then
+            scripts/deploy-summary.sh >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## ❌ Deploy of $TAG did not start: it stopped before checking out the deploy scripts. See the steps above." >> "$GITHUB_STEP_SUMMARY"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
           OUTCOME: ${{ job.status }}

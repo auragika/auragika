@@ -7,7 +7,7 @@
 #   TAG=v2026.11.10-120 FROM=v2026.10.31-109 scripts/deploy-summary.sh
 #
 # Needs TAG (the release deployed). Optional: FROM (the release live before it; empty when
-# unknown), OUTCOME (the job status; anything but "failure" counts as success), LIVE_URL,
+# unknown), OUTCOME (the job status: success, failure or cancelled; empty means success), LIVE_URL,
 # PERMALINK and DEPLOY_ID (from scripts/deploy-netlify.sh), STARTED (epoch seconds when the
 # deploy began), and GitHub's GITHUB_* variables.
 # The lists are the commits between the two tags: one per merged PR, as main is squash-only.
@@ -37,7 +37,11 @@ changes() {
   done <<<"$lines"
 }
 
-if [ "${OUTCOME:-success}" = failure ]; then
+# Anything but success (failure or cancelled) must never be reported as live.
+outcome=${OUTCOME:-success}
+if [ "$outcome" = cancelled ]; then
+  heading="⚠️ Deploy of [$TAG]($rel/$TAG) did not complete (cancelled)"
+elif [ "$outcome" != success ]; then
   heading="❌ Deploy of [$TAG]($rel/$TAG) failed"
 else
   case $kind in
@@ -62,8 +66,17 @@ echo "| **Deployed by** | @${GITHUB_ACTOR:-$(whoami)} |"
 [ -z "${DEPLOY_ID:-}" ] || echo "| **Netlify deploy** | \`$DEPLOY_ID\` |"
 echo
 
-if [ "${OUTCOME:-success}" = failure ]; then
-  echo "Nothing new went live: ${FROM:-the previous release} is still live. See the failed step above, then run **Deploy** again."
+# A run that stopped after uploading can still go live (Netlify publishes the upload on its own),
+# so read what the site serves now instead of assuming the old release is still there.
+if [ "$outcome" != success ]; then
+  now=$("$(dirname "$0")/live-release.sh" 2>/dev/null) || now=""
+  if [ -n "$now" ] && [ "$now" = "$TAG" ]; then
+    echo "The run stopped, but the site already serves $TAG, so it **is live**. Check it; to undo, Actions → **Rollback**."
+  elif [ -n "$now" ]; then
+    echo "Nothing new went live: the site still serves $now. Netlify may finish publishing an upload that got through, so check again in a minute, then run **Deploy** again."
+  else
+    echo "This deploy didn't finish, and the live release couldn't be read; ${FROM:-the previous release} should still be live. Check the site, then run **Deploy** again."
+  fi
   exit 0
 fi
 
