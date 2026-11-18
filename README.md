@@ -14,7 +14,7 @@ Live at [auragika.com](https://auragika.com)
 |---|---|
 | **Hero** | The Auragika wordmark, how the name is made, and the two main actions |
 | **Apps** | Our apps, with QuizClash featured; driven by `data/apps.yaml`. Apps in testing (`beta: true`) show an "In beta · Coming soon" banner, aren't links and aren't counted as live |
-| **Next** | What's on the way (travel journal, our kitchen); driven by `data/soon.yaml` |
+| **Next** | What's on the way (Auragika Prints, travel journal, our kitchen); driven by `data/soon.yaml`. An entry with `products` or `samples` becomes a full-width feature card; `status: preview` shows "Private preview", and `status: open` with a `url` shows a Visit button. Sample images go in `assets/images/` and are listed under `samples` (Hugo resizes them to fingerprinted WebP) |
 | **Us** | Ruchika and Anurag, with LinkedIn and portfolio links; driven by `data/people.yaml` |
 
 To add or change an app, an upcoming item or a person, edit the YAML file; the page picks it up. Icons are keys from `layouts/_partials/icon.html`.
