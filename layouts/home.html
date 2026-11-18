@@ -39,13 +39,7 @@
     {{ partial "section-head.html" (dict "eyebrow" "On the way" "title" "What we're making next") }}
     <ul class="soon">
       {{- range $i, $item := hugo.Data.soon }}
-      <li class="soon-card reveal" style="--d:{{ mul $i 60 }}ms">
-        <span class="app-icon">{{ partial "icon.html" $item.icon }}</span>
-        <div>
-          <h3 class="h3">{{ $item.name }} <span class="pill pill-muted">Soon</span></h3>
-          <p class="muted">{{ $item.desc }}</p>
-        </div>
-      </li>
+      {{ partial "soon-card.html" (dict "item" $item "i" $i) }}
       {{- end }}
     </ul>
   </section>

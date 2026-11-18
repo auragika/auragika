@@ -1,4 +1,15 @@
 # "What we're making next" cards, in display order. icon: a key from layouts/_partials/icon.html.
+# Optional, for a bigger full-width card (layouts/_partials/soon-card.html):
+#   tagline, products (chips), status ("preview" = "Private preview" pill; "open" + url = a visit button),
+#   samples: list of { image: path under assets/, alt: what it shows }. Until there are samples,
+#   the first four products show as empty frames.
+- name: Auragika Prints
+  icon: lotus
+  tagline: Where creativity glows
+  status: preview
+  desc: Minimal, heartfelt stationery in soft pastels, with florals and lotus motifs. Starting small with postcards and festival cards.
+  products: [Postcards, Festival cards, Greeting cards, Art prints, Gift inserts, Printables]
+  samples: []
 - name: Travel journal
   icon: compass
   desc: Places we loved, itineraries that worked and the tips we wish we'd had.

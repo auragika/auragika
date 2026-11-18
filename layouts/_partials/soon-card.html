@@ -1,0 +1,38 @@
+{{- /* A "What we're making next" card. Takes a dict: item (an entry of data/soon.yaml) and i (its index, for the reveal stagger).
+     An item with products or samples is the full-width feature card; see the comment in data/soon.yaml. */ -}}
+{{- $item := .item -}}
+{{- $feature := or $item.products $item.samples -}}
+<li class="soon-card{{ if $feature }} soon-feature{{ end }} reveal" style="--d:{{ mul .i 60 }}ms">
+  <div class="soon-main">
+    <span class="app-icon">{{ partial "icon.html" $item.icon }}</span>
+    <div>
+      <h3 class="h3">{{ $item.name }}
+        {{- if eq $item.status "preview" }} <span class="pill pill-accent">Private preview</span>
+        {{- else if not (and (eq $item.status "open") $item.url) }} <span class="pill pill-muted">Soon</span>{{ end }}</h3>
+      {{- with $item.tagline }}
+      <p class="soon-tagline">{{ . }}</p>
+      {{- end }}
+      <p class="muted">{{ $item.desc }}</p>
+      {{- with $item.products }}
+      <ul class="soon-chips" aria-label="What {{ $item.name }} makes">
+        {{- range . }}<li class="pill pill-muted">{{ . }}</li>{{ end }}
+      </ul>
+      {{- end }}
+    </div>
+    {{- if and (eq $item.status "open") $item.url }}
+    <a class="btn btn-secondary btn-sm soon-visit" href="{{ $item.url }}" target="_blank" rel="noopener">Visit {{ partial "icon.html" "arrow" }}<span class="sr-only"> {{ $item.name }} (opens in a new tab)</span></a>
+    {{- end }}
+  </div>
+  {{- if $feature }}
+  <ul class="samples" aria-label="Sample designs">
+    {{- range $item.samples }}
+    {{- $img := (resources.Get .image).Resize "640x webp q85" }}
+    <li class="sample"><img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}" alt="{{ .alt }}" loading="lazy" decoding="async"></li>
+    {{- else }}
+    {{- range first 4 $item.products }}
+    <li class="sample sample-empty"><span>{{ . }}</span><span class="fine">Sample soon</span></li>
+    {{- end }}
+    {{- end }}
+  </ul>
+  {{- end }}
+</li>
