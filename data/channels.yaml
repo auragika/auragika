@@ -1,0 +1,14 @@
+# "Watch" section: channels we run, in display order. icon: a key from layouts/_partials/icon.html.
+# links: each { label, url, icon }; they open in a new tab.
+- name: Inkwise
+  icon: pen
+  tagline: Big stories. Short answers.
+  desc: Hand-drawn, whiteboard-style explainers on what everyone's talking about, usually in under a minute. One question, the key facts, and the sources linked in every video.
+  topics: [Games, Tech, Science, Money, World news]
+  links:
+    - label: YouTube
+      url: https://www.youtube.com/@InkWise-ra
+      icon: youtube
+    - label: Instagram
+      url: https://www.instagram.com/inkwise_ra/
+      icon: instagram

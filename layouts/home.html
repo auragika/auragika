@@ -34,6 +34,31 @@
     </ul>
   </section>
 
+  {{/* ── Watch: channels we run ── */}}
+  <section id="watch" class="page section">
+    {{ partial "section-head.html" (dict "eyebrow" "Watch" "title" "Our channel") }}
+    <ul class="channels">
+      {{- range $i, $c := hugo.Data.channels }}
+      <li class="card card-pad channel reveal" style="--d:{{ mul $i 80 }}ms">
+        <span class="app-icon">{{ partial "icon.html" $c.icon }}</span>
+        <div>
+          <h3 class="h2">{{ $c.name }}</h3>
+          <p class="channel-tagline">{{ $c.tagline }}</p>
+          <p class="muted">{{ $c.desc }}</p>
+          <ul class="channel-topics" aria-label="Topics on {{ $c.name }}">
+            {{- range $c.topics }}<li class="pill pill-muted">{{ . }}</li>{{ end }}
+          </ul>
+        </div>
+        <div class="channel-links">
+          {{- range $c.links }}
+          <a class="btn btn-secondary btn-sm" href="{{ .url }}" target="_blank" rel="noopener">{{ partial "icon.html" .icon }}{{ .label }}<span class="sr-only"> for {{ $c.name }} (opens in a new tab)</span></a>
+          {{- end }}
+        </div>
+      </li>
+      {{- end }}
+    </ul>
+  </section>
+
   {{/* ── Coming next ── */}}
   <section id="next" class="page section">
     {{ partial "section-head.html" (dict "eyebrow" "On the way" "title" "What we're making next") }}
