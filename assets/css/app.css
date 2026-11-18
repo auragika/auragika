@@ -122,6 +122,15 @@ main:focus { outline: none; }
   .is-featured .app-card:hover .app-mark { transform: rotate(-8deg) scale(1.05); opacity: .12; }
 }
 
+/* ---------- Watch ---------- */
+.channels { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+.channel { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px 18px; align-items: start; }
+.channel .app-icon { background: var(--accent-soft); color: var(--accent); }
+.channel-tagline { font-family: var(--font-serif); font-style: italic; font-size: 1.2rem; color: var(--text-2); margin: 2px 0 6px; }
+.channel-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.channel-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+@media (min-width: 720px) { .channel-links { grid-column: 2; } }
+
 /* ---------- Coming soon ---------- */
 .soon { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 640px) { .soon { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
